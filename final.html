@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ignos Studio – Susun Hasil Akhir</title>
+    <link rel="stylesheet" href="src/css/output.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      crossorigin="anonymous"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+  </head>
+
+  <body
+    class="bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen p-4 sm:p-8"
+  >
+    <div
+      x-data="{
+        uploadedPhotos: [
+          'src/img/user1.jpg',
+          'src/img/user2.jpg',
+          'src/img/user3.jpg',
+        ],
+        selectedSlots: Array(3).fill(null),
+        selectPhoto(slotIndex, photo) {
+          this.selectedSlots[slotIndex] = photo;
+        },
+        handleFinish() {
+          alert('Terima kasih! Hasil akhir Anda sedang diproses.');
+        }
+      }"
+      class="max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 sm:p-8 shadow-2xl"
+    >
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <p class="text-sm text-gray-400 mb-1">Langkah 3 dari 3</p>
+        <h1 class="text-white text-2xl font-semibold mb-2">
+          Susun Hasil Akhir Anda
+        </h1>
+        <p class="text-gray-400 text-sm">
+          Pilih foto terbaik dan tempatkan ke dalam template pilihan Anda
+        </p>
+      </div>
+
+      <!-- Grid -->
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Left: Uploaded Photos -->
+        <div>
+          <h2 class="text-gray-200 mb-4 text-center">Foto Anda</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <template x-for="(photo, index) in uploadedPhotos" :key="index">
+              <img
+                :src="photo"
+                @click="selectPhoto(selectedSlots.findIndex(slot => slot === null), photo)"
+                class="w-full h-28 object-cover rounded-xl border border-gray-700 hover:border-blue-500 cursor-pointer transition-all"
+              />
+            </template>
+          </div>
+        </div>
+
+        <!-- Right: Template Slots -->
+        <div>
+          <h2 class="text-gray-200 mb-4 text-center">Template Pilihan</h2>
+          <div class="grid grid-cols-2 gap-4">
+            <template x-for="(slot, index) in selectedSlots" :key="index">
+              <div
+                class="w-full h-32 rounded-xl border-2 border-dashed flex items-center justify-center text-gray-500 cursor-pointer"
+                :class="slot ? 'border-blue-500 bg-gray-700/50' : 'border-gray-600/50'"
+                @click="slot = null"
+              >
+                <template x-if="!slot">
+                  <span>Kosong</span>
+                </template>
+                <template x-if="slot">
+                  <img
+                    :src="slot"
+                    class="w-full h-full object-cover rounded-lg"
+                  />
+                </template>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Button -->
+      <div class="flex justify-end mt-8">
+        <button
+          @click="handleFinish()"
+          class="bg-green-600 border border-green-700/50 rounded-xl px-6 py-3 text-white hover:bg-green-700 transition-all duration-300 shadow-lg"
+        >
+          Selesai & Generate Hasil →
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
