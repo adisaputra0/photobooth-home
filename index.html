@@ -22,9 +22,17 @@
         bonusAccepted: false,
         pricePerPerson: 60000,
         get totalPrice() { return this.numPeople * this.pricePerPerson },
-        handleBonusAccept() { this.bonusAccepted = true; this.bonusModalOpen = false; },
-        handleContinue() { window.location.href = 'template.html'; }
-      }" class="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black p-4 sm:p-8">
+        handleBonusAccept() { this.bonusAccepted = true; this.bonusModalOpen = false; 
+          localStorage.setItem('bonusAccepted', this.bonusAccepted); },
+        resetBonusAccept() { this.bonusAccepted = false; this.bonusModalOpen = false; 
+          localStorage.setItem('bonusAccepted', this.bonusAccepted); },
+        handleContinue() { window.location.href = 'template.html'; },
+        // 👇 fungsi untuk sinkronisasi numPeople ke localStorage
+        updateNumPeople() {
+          localStorage.setItem('numPeople', this.numPeople);
+        }
+      }" x-init="updateNumPeople(); resetBonusAccept()" x-effect="updateNumPeople(); resetBonusAccept()"
+    class="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black p-4 sm:p-8">
     <div class="max-w-5xl mx-auto">
       <!-- Main Card -->
       <div class="bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 sm:p-8 shadow-2xl">
@@ -60,7 +68,7 @@
             <!-- Jumlah Orang -->
             <div>
               <label class="text-gray-300 mb-3">Masukkan Jumlah Orang</label>
-              <input type="number" x-model.number="numPeople" min="1"
+              <input type="number" x-model.number="numPeople" @change="updateNumPeople()" min="1" id="numPeople"
                 class="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-gray-500 transition-all duration-300" />
             </div>
 
@@ -294,7 +302,7 @@
             <li>Free costume & accessories</li>
           </ul>
           <div class="flex gap-3 pt-6">
-            <button @click="bonusModalOpen = false"
+            <button @click="resetBonusAccept()"
               class="cursor-pointer flex-1 bg-gray-100 rounded-xl py-3 text-gray-700 hover:bg-gray-200 transition-all">
               Tidak, Terima Kasih
             </button>
@@ -348,6 +356,7 @@
     </div>
   </div>
   <script>
+    //Session Duration Management
     let sessionDurationDefault = 60;
     let sessionDuration = localStorage.getItem('sessionDuration');
     let txt_sessionDuration = document.getElementById("sessionDuration");
