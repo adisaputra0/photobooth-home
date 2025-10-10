@@ -163,10 +163,15 @@
             return alert(
               "Semua user harus memilih template terlebih dahulu!"
             );
-          localStorage.setItem(
-            "selectedTemplates",
-            JSON.stringify(this.users)
-          );
+          // localStorage.setItem(
+          //   "selectedTemplates",
+          //   JSON.stringify(this.users)
+          // );
+
+          // Simpan hanya ID template yang dipilih
+          const templateIds = this.users.map(user => user.template.id);
+          console.log("Template IDs:", templateIds);
+          localStorage.setItem("selectedTemplates", JSON.stringify(templateIds));
           window.location.href = "final.html";
         },
       }));
