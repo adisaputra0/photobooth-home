@@ -1,0 +1,41 @@
+html {
+    --linkBackground: rgba(255, 255, 255, 0.8);
+    --linkText: #000;
+    --linkHoverBackground: rgba(255, 255, 255, 0.8);
+    --linkHoverText: #000;
+    --linkRadius: 4px;
+    --profileBackground: #fff;
+    --heroBackground: #dddddd;
+}
+
+.background-ignos {
+    background-image: linear-gradient(to right top, #ffffff, #f6f6f6, #eeeeee, #e5e5e5, #dddddd);
+}
+
+.background-ignos-dark {
+    background: rgb(34, 34, 34) !important;
+    background: linear-gradient(90deg, rgba(34, 34, 34, 1) 0%, rgba(68, 68, 68, 1) 50%, rgba(34, 34, 34, 1) 100%) !important;
+}
+
+
+.bg-polymorphism {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.light-blue {
+    background-color: #89bcf6;
+}
+
+.dark-blue {
+    background-color: #204883;
+}
+
+.active {
+    position: fixed;
+    top: 0;
+}

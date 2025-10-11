@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* .bg-ignos {
+    background: rgb(221, 221, 221);
+    background: linear-gradient(90deg, rgba(221, 221, 221, 1) 0%, rgba(255, 255, 255, 1) 50%, rgba(221, 221, 221, 1) 100%);
+}
+
+.bg-ignos-dark {
+    background: rgb(34, 34, 34);
+    background: linear-gradient(90deg, rgba(34, 34, 34, 1) 0%, rgba(68, 68, 68, 1) 50%, rgba(34, 34, 34, 1) 100%);
+} */
