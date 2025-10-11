@@ -6,6 +6,8 @@ use App\Http\Controllers\HargaController;
 use App\Http\Controllers\WaktuController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PhotoboxController;
+use App\Http\Controllers\PhotoboothController;
+use App\Http\Controllers\PhotoboothTemplateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +37,6 @@ Route::post("/strukBooking", [BookingController::class, "strukBooking"])->name("
 Route::post("/backToBooking", [BookingController::class, "backToBooking"])->name("backToBooking");
 Route::post("/storeBooking", [BookingController::class, "store"])->name("storeBooking");
 Route::get("/timeBooking/{date}", [BookingController::class, "time"])->name("timeBookings");
-Route::get("/coba", [BookingController::class, "index1"])->name("index1");
 
 
 //Admin
@@ -71,3 +72,9 @@ Route::get("/hapusSampah", [PhotoboxController::class, "hapusSampah"])->middlewa
 // Admin Cashier
 Route::get('/cashierPhotobox', [PhotoboxController::class, "cashierPhotobox"])->name('kasirPhotobox');
 Route::get('/cashierAdmin', [BookingController::class, "adminCashier"])->name('kasirSelfPhoto');
+
+//Photobooth - Home
+Route::get("/photobooth", [PhotoboothController::class, "index"])->name("photobooth");
+Route::get("photobooth/template", [PhotoboothTemplateController::class, "index"])->name("photobooth.template");
+Route::get("photobooth/final", [PhotoboothController::class, "final"])->name("photobooth.final");
+

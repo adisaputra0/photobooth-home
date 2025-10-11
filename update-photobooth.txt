@@ -1,0 +1,14 @@
+Update:
+- routes/web.php
+
+Penambahan
+- css (inget build jadi nama "final-photobooth.css" atau apapun itu). Lalu bisa dah di up ke server
+
+- controller/PhotoboothController
+- controller/PhotoboothTemplateController
+
+- layouts/photobooth
+
+- photobooth/index
+- photobooth/template
+- photobooth/final
