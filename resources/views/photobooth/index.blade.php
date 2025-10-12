@@ -3,13 +3,27 @@
 @section('content')
     <div x-data="{
         numPeople: 2,
+        numBando: 0,
         timeAddition: '-',
         showTutorials: false,
         bonusModalOpen: false,
         confirmModalOpen: false,
         bonusAccepted: false,
-        pricePerPerson: 60000,
-        get totalPrice() { return this.numPeople * this.pricePerPerson },
+        pricePerPerson: {{ $hargaPhotobox }},
+        hargaBando: {{ $hargaBando }},
+        hargaTambahanWaktu: {{ $hargaTambahanWaktu }},
+        get totalPrice() {
+            let total = this.numPeople * this.pricePerPerson;
+    
+            // Tambahan waktu
+            if (this.timeAddition === '5') total += this.hargaTambahanWaktu;
+            else if (this.timeAddition === '10') total += this.hargaTambahanWaktu * 2;
+    
+            // Tambahan bando
+            total += this.numBando * this.hargaBando;
+    
+            return total;
+        },
         handleBonusAccept() {
             this.bonusAccepted = true;
             this.bonusModalOpen = false;
@@ -20,8 +34,9 @@
             this.bonusModalOpen = false;
             localStorage.setItem('bonusAccepted', this.bonusAccepted);
         },
-        handleContinue() { window.location.href = `{{ route('photobooth.template') }}`; },
-        // 👇 fungsi untuk sinkronisasi numPeople ke localStorage
+        handleContinue() {
+            window.location.href = `{{ route('photobooth.template') }}`;
+        },
         updateNumPeople() {
             localStorage.setItem('numPeople', this.numPeople);
         }
@@ -67,7 +82,16 @@
                                 id="numPeople"
                                 class="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-gray-500 transition-all duration-300" />
                         </div>
-
+                        <!-- Jumlah Bando -->
+                        <div class="space-y-3">
+                            <label class="text-gray-300">Jumlah Bando</label>
+                            <p class="text-sm text-gray-400">
+                                Tambahkan berapa banyak bando yang digunakan (Rp.
+                                {{ number_format($hargaBando, 0, ',', '.') }} / pcs)
+                            </p>
+                            <input type="number" x-model.number="numBando" min="0"
+                                class="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-gray-500 transition-all duration-300" />
+                        </div>
                         <!-- Penambahan Waktu -->
                         <div class="space-y-3">
                             <label class="text-gray-300">Penambahan Waktu</label>
@@ -77,10 +101,8 @@
                             <select x-model="timeAddition"
                                 class="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gray-500 transition-all duration-300 appearance-none cursor-pointer">
                                 <option value="-">-</option>
-                                <option value="15">+15 Menit</option>
-                                <option value="30">+30 Menit</option>
-                                <option value="45">+45 Menit</option>
-                                <option value="60">+60 Menit</option>
+                                <option value="5">+5 Menit</option>
+                                <option value="10">+10 Menit</option>
                             </select>
                         </div>
 
@@ -130,7 +152,8 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                     </svg>
                                 </div>
-                                <span>15 Menit Durasi Foto</span>
+                                <span
+                                    x-text="`${15 + (timeAddition !== '-' ? parseInt(timeAddition) : 0)} Menit Durasi Foto`"></span>
                             </div>
 
                             <div class="flex items-start space-x-3">
