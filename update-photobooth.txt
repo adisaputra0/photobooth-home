@@ -1,7 +1,7 @@
 Update:
 - routes/web.php
 
-Penambahan
+Penambahan Files
 - css (inget build jadi nama "final-photobooth.css" atau apapun itu). Lalu bisa dah di up ke server
 
 - controller/PhotoboothController
@@ -12,3 +12,10 @@ Penambahan
 - photobooth/index
 - photobooth/template
 - photobooth/final
+
+- Models/PhotoboothPhotos
+- Models/PhotoboothTemplates
+
+Penambahan Tables (Database)
+- photobooth_photos
+- photobooth_templates
