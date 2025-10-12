@@ -9,14 +9,51 @@
                 'src/img/user3.jpg',
             ],
             selectedSlots: Array(3).fill(null),
+            remainingTime: 0,
+            timerInterval: null,
+        
+            init() {
+                // Ambil durasi dari localStorage (dalam menit)
+                const savedMinutes = localStorage.getItem('sessionDuration');
+                const durationInSeconds = savedMinutes ? parseInt(savedMinutes) * 60 : 60 * 1; // default 1 menit jika kosong
+                this.remainingTime = durationInSeconds;
+        
+                this.startCountdown();
+            },
+        
+            startCountdown() {
+                this.timerInterval = setInterval(() => {
+                    if (this.remainingTime > 0) {
+                        this.remainingTime--;
+                    } else {
+                        clearInterval(this.timerInterval);
+                        alert('Waktu Habis');
+                    }
+                }, 1000);
+            },
+        
+            formatTime(seconds) {
+                const m = Math.floor(seconds / 60);
+                const s = seconds % 60;
+                return `${m}:${s.toString().padStart(2, '0')}`;
+            },
+        
             selectPhoto(slotIndex, photo) {
                 this.selectedSlots[slotIndex] = photo;
             },
+        
             handleFinish() {
                 alert('Terima kasih! Hasil akhir Anda sedang diproses.');
             }
         }"
-            class="max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 sm:p-8 shadow-2xl">
+            class="relative max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 sm:p-8 shadow-2xl">
+
+            <!-- Countdown Timer (kanan atas) -->
+            <div
+                class="absolute top-4 right-6 bg-gray-900/70 border border-gray-700/50 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-md">
+                ⏱️ <span x-text="formatTime(remainingTime)"></span>
+            </div>
+
             <!-- Header -->
             <div class="text-center mb-8">
                 <p class="text-sm text-gray-400 mb-1">Langkah 3 dari 3</p>
