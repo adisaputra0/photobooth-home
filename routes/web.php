@@ -75,6 +75,7 @@ Route::get('/cashierAdmin', [BookingController::class, "adminCashier"])->name('k
 
 //Photobooth - Home
 Route::get("/photobooth", [PhotoboothController::class, "index"])->name("photobooth");
+Route::post("/photobooth/store", [PhotoboothController::class, "store"])->name("photobooth.store");
 Route::get("photobooth/template", [PhotoboothTemplateController::class, "index"])->name("photobooth.template");
 Route::get("photobooth/final", [PhotoboothController::class, "final"])->name("photobooth.final");
 

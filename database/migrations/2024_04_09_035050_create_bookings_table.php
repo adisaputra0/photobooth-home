@@ -20,6 +20,11 @@ return new class extends Migration
             $table->string("package");
             $table->string("background");
             $table->string("penambahan_waktu")->nullable();
+            $table->string("tirai");
+            $table->string("spotlight");
+            $table->string("nomor_telp");
+            $table->string("kendaraan");
+            $table->string("note");
             $table->timestamps();
         });
     }

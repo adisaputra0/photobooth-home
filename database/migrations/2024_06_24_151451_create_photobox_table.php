@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string("waktu");
             $table->string("penambahan_waktu")->nullable();
             $table->integer("jumlah_bando")->nullable();
+            $table->string("nomor_telp");
+            $table->string("kendaraan");
+            $table->string("note");
             $table->timestamps();
         });
     }

@@ -3,11 +3,7 @@
 @section('content')
     <div class="bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen p-4 sm:p-8">
         <div x-data="{
-            uploadedPhotos: [
-                'src/img/user1.jpg',
-                'src/img/user2.jpg',
-                'src/img/user3.jpg',
-            ],
+            uploadedPhotos: {{ Js::from($photos->map(fn($p) => asset($p->file_path))) }},
             selectedSlots: Array(3).fill(null),
             remainingTime: 0,
             timerInterval: null,
