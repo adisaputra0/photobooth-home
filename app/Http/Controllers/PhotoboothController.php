@@ -11,6 +11,10 @@ class PhotoboothController extends Controller
     //
     public function index()
     {
+        $photos = PhotoboothPhoto::all();
+        if($photos){
+            $this->destroyAll();
+        }
         $hargaPhotobox = HargaPaket::where("nama_paket", "photobox")->first();
         $hargaBando = 5000;
         $hargaTambahanWaktu = 15000;
@@ -37,6 +41,20 @@ class PhotoboothController extends Controller
         }
 
         return redirect()->route('photobooth.template');
+    }
+    //destroy all photos
+    public function destroyAll()
+    {
+        $photos = PhotoboothPhoto::all();
+        foreach ($photos as $photo) {
+            // Hapus file fisik jika ada
+            if (file_exists(public_path($photo->file_path))) {
+                unlink(public_path($photo->file_path));
+            }
+            // Hapus data dari database
+            $photo->delete();
+        }  
+        return redirect()->route('photobooth');
     }
     public function final()
     {
