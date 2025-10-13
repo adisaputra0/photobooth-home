@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\HargaPaket;
 use App\Models\HargaPerOrang;
 use Illuminate\Database\Seeder;
+use App\Models\PhotoboothTemplate;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -46,6 +47,22 @@ class DatabaseSeeder extends Seeder
         ]);
         HargaPerorang::create([
             "harga" => 35000,
+        ]);
+        
+        PhotoboothTemplate::create([
+            "name" => "Template 1",
+            "file_path" => "templates/slot-2.png",
+            "slots" => 2,
+        ]);
+        PhotoboothTemplate::create([
+            "name" => "Template 2",
+            "file_path" => "templates/slot-4.png",
+            "slots" => 4,
+        ]);
+        PhotoboothTemplate::create([
+            "name" => "Template 3",
+            "file_path" => "templates/slot-6.png",
+            "slots" => 6,
         ]);
     }
 }

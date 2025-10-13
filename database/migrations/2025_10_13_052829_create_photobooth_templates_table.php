@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('file_path');
-            $table->string('slots'); // e.g., "4,6,8"
+            $table->integer('slots'); // e.g., "4,6,8"
             $table->timestamps();
         });
     }

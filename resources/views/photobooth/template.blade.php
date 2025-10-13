@@ -87,27 +87,15 @@
     <script>
         document.addEventListener("alpine:init", () => {
             Alpine.data("templateSelector", () => ({
-                templates: [{
-                        id: 1,
-                        name: "Classic Portrait",
-                        image: "https://i.pinimg.com/736x/11/ef/a0/11efa015877da3cf6ca3264b1858c07e.jpg",
-                    },
-                    {
-                        id: 2,
-                        name: "Fun Frame",
-                        image: "https://i.pinimg.com/736x/91/f6/a4/91f6a42160d5a6dd4d63621592000a8e.jpg",
-                    },
-                    {
-                        id: 3,
-                        name: "Minimalist Style",
-                        image: "https://i.pinimg.com/736x/7d/fa/ab/7dfaabea511ad2aa6c2b5f652741e079.jpg",
-                    },
-                    {
-                        id: 4,
-                        name: "Romantic Duo",
-                        image: "https://i.pinimg.com/736x/7b/ac/df/7bacdf53ceb81e087d424e3010cbafea.jpg",
-                    },
-                ],
+                templates: {{ Js::from(
+                    $templates->map(
+                        fn($template) => [
+                            'id' => $template->id,
+                            'name' => $template->name,
+                            'image' => asset($template->file_path),
+                        ],
+                    ),
+                ) }},
 
                 // Jumlah user (contoh ambil dari localStorage atau default 3)
                 numPeople: localStorage.getItem("numPeople") ? (localStorage.getItem("bonusAccepted") ==
