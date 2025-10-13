@@ -388,14 +388,14 @@
     </div>
     <script>
         //Session Duration Management
-        let sessionDurationDefault = 60;
+        let sessionDurationDefault = 15;
         let sessionDuration = localStorage.getItem('sessionDuration');
         let txt_sessionDuration = document.getElementById("sessionDuration");
         let btn_resetSessionDuration = document.getElementById("resetSessionDuration");
 
         if (!sessionDuration) {
-            localStorage.setItem('sessionDuration', 60);
-            sessionDuration = 60;
+            localStorage.setItem('sessionDuration', sessionDurationDefault);
+            sessionDuration = sessionDurationDefault;
         }
         if (sessionDuration != sessionDurationDefault) {
             btn_resetSessionDuration.classList.remove('hidden');
