@@ -4,16 +4,30 @@
     <div class="bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen p-4 sm:p-8">
         <div x-data="{
             uploadedPhotos: {{ Js::from($photos->map(fn($p) => asset($p->file_path))) }},
-            selectedSlots: Array(3).fill(null),
+            templates: {{ Js::from($templates) }},
+            selectedTemplates: [],
+            templateSlots: {}, // { templateIndex: [photo1, photo2, ...] }
             remainingTime: 0,
             timerInterval: null,
+            activeTemplate: 0,
         
             init() {
-                // Ambil durasi dari localStorage (dalam menit)
-                const savedMinutes = localStorage.getItem('sessionDuration');
-                const durationInSeconds = savedMinutes ? parseInt(savedMinutes) * 60 : 60 * 1; // default 1 menit jika kosong
-                this.remainingTime = durationInSeconds;
+                // Ambil selectedTemplates dari localStorage
+                const storedTemplates = localStorage.getItem('selectedTemplates');
+                const templateIds = storedTemplates ? JSON.parse(storedTemplates) : [];
         
+                // Map ke data template lengkap
+                this.selectedTemplates = templateIds.map(id => this.templates[id]);
+        
+                // Inisialisasi slots kosong untuk setiap template
+                this.selectedTemplates.forEach((template, index) => {
+                    this.templateSlots[index] = Array(template.slots).fill(null);
+                });
+        
+                // Timer
+                const savedMinutes = localStorage.getItem('sessionDuration');
+                const durationInSeconds = savedMinutes ? parseInt(savedMinutes) * 60 : 60 * 1;
+                this.remainingTime = durationInSeconds;
                 this.startCountdown();
             },
         
@@ -34,12 +48,20 @@
                 return `${m}:${s.toString().padStart(2, '0')}`;
             },
         
-            selectPhoto(slotIndex, photo) {
-                this.selectedSlots[slotIndex] = photo;
+            selectPhoto(templateIndex, slotIndex, photo) {
+                this.templateSlots[templateIndex][slotIndex] = photo;
+            },
+        
+            selectPhotoAuto(templateIndex, photo) {
+                const emptyIndex = this.templateSlots[templateIndex].findIndex(slot => slot === null);
+                if (emptyIndex !== -1) {
+                    this.templateSlots[templateIndex][emptyIndex] = photo;
+                }
             },
         
             handleFinish() {
                 alert('Terima kasih! Hasil akhir Anda sedang diproses.');
+                // Kirim data this.templateSlots ke backend
             }
         }"
             class="relative max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 sm:p-8 shadow-2xl">
@@ -66,32 +88,55 @@
                 <!-- Left: Uploaded Photos -->
                 <div>
                     <h2 class="text-gray-200 mb-4 text-center">Foto Anda</h2>
+
+                    <!-- Pilih template yang mana -->
+                    <template x-if="selectedTemplates.length > 1">
+                        <div class="flex gap-2 mb-4 justify-center flex-wrap">
+                            <template x-for="(template, idx) in selectedTemplates" :key="idx">
+                                <button @click="activeTemplate = idx"
+                                    :class="activeTemplate === idx ? 'bg-blue-600' : 'bg-gray-700'"
+                                    class="px-3 py-1 rounded-lg text-white text-xs" x-text="`Template ${idx + 1}`">
+                                </button>
+                            </template>
+                        </div>
+                    </template>
+
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         <template x-for="(photo, index) in uploadedPhotos" :key="index">
-                            <img :src="photo"
-                                @click="selectPhoto(selectedSlots.findIndex(slot => slot === null), photo)"
+                            <img :src="photo" @click="selectPhotoAuto(activeTemplate || 0, photo)"
                                 class="w-full h-28 object-cover rounded-xl border border-gray-700 hover:border-blue-500 cursor-pointer transition-all" />
                         </template>
                     </div>
                 </div>
-
                 <!-- Right: Template Slots -->
                 <div>
                     <h2 class="text-gray-200 mb-4 text-center">Template Pilihan</h2>
-                    <div class="grid grid-cols-2 gap-4">
-                        <template x-for="(slot, index) in selectedSlots" :key="index">
-                            <div class="w-full h-32 rounded-xl border-2 border-dashed flex items-center justify-center text-gray-500 cursor-pointer"
-                                :class="slot ? 'border-blue-500 bg-gray-700/50' : 'border-gray-600/50'"
-                                @click="slot = null">
-                                <template x-if="!slot">
-                                    <span>Kosong</span>
-                                </template>
-                                <template x-if="slot">
-                                    <img :src="slot" class="w-full h-full object-cover rounded-lg" />
+
+                    <!-- Loop setiap template -->
+                    <template x-for="(template, templateIndex) in selectedTemplates" :key="templateIndex">
+                        <div class="mb-6">
+                            <h3 class="text-gray-300 text-sm mb-3" x-text="`${template.name} (${template.slots} slots)`">
+                            </h3>
+
+                            <!-- Grid slots berdasarkan jumlah slots template -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <template x-for="(slot, slotIndex) in templateSlots[templateIndex]" :key="slotIndex">
+                                    <div class="w-full h-32 rounded-xl border-2 border-dashed flex items-center justify-center text-gray-500 cursor-pointer"
+                                        :class="slot ? 'border-blue-500 bg-gray-700/50' : 'border-gray-600/50'"
+                                        @click="templateSlots[templateIndex][slotIndex] = null">
+
+                                        <template x-if="!slot">
+                                            <span x-text="`Slot ${slotIndex + 1}`"></span>
+                                        </template>
+
+                                        <template x-if="slot">
+                                            <img :src="slot" class="w-full h-full object-cover rounded-lg" />
+                                        </template>
+                                    </div>
                                 </template>
                             </div>
-                        </template>
-                    </div>
+                        </div>
+                    </template>
                 </div>
             </div>
 

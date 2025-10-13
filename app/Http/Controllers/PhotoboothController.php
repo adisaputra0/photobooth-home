@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\HargaPaket;
 use Illuminate\Http\Request;
 use App\Models\PhotoboothPhoto;
+use App\Models\PhotoboothTemplate;
 
 class PhotoboothController extends Controller
 {
@@ -56,9 +57,9 @@ class PhotoboothController extends Controller
         }  
         return redirect()->route('photobooth');
     }
-    public function final()
-    {
+    public function final() {
         $photos = PhotoboothPhoto::all();
-        return view('photobooth.final', ['photos' => $photos]);
+        $templates = PhotoboothTemplate::all()->keyBy('id');
+        return view('photobooth.final', ['photos' => $photos, 'templates' => $templates]);
     }
 }
