@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HargaPaket;
 use Illuminate\Http\Request;
-use App\Models\PhotoboothPhotos;
+use App\Models\PhotoboothPhoto;
 
 class PhotoboothController extends Controller
 {
@@ -30,7 +30,7 @@ class PhotoboothController extends Controller
                 $file->move(public_path('uploads/photobooth'), $filename);
 
                 // Simpan informasi file ke database
-                PhotoboothPhotos::create([
+                PhotoboothPhoto::create([
                     'file_path' => 'uploads/photobooth/' . $filename,
                 ]);
             }
@@ -40,7 +40,7 @@ class PhotoboothController extends Controller
     }
     public function final()
     {
-        $photos = PhotoboothPhotos::all();
+        $photos = PhotoboothPhoto::all();
         return view('photobooth.final', ['photos' => $photos]);
     }
 }
