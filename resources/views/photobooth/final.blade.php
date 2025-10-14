@@ -118,22 +118,32 @@
                             <h3 class="text-gray-300 text-sm mb-3" x-text="`${template.name} (${template.slots} slots)`">
                             </h3>
 
-                            <!-- Grid slots berdasarkan jumlah slots template -->
-                            <div class="grid grid-cols-2 gap-4">
-                                <template x-for="(slot, slotIndex) in templateSlots[templateIndex]" :key="slotIndex">
-                                    <div class="w-full h-32 rounded-xl border-2 border-dashed flex items-center justify-center text-gray-500 cursor-pointer"
-                                        :class="slot ? 'border-blue-500 bg-gray-700/50' : 'border-gray-600/50'"
-                                        @click="templateSlots[templateIndex][slotIndex] = null">
+                            <!-- Container dengan background template - FIXED HEIGHT -->
+                            <div class="relative w-full h-[800px] rounded-xl overflow-hidden border-2 border-gray-700/50">
+                                <!-- Background Template -->
+                                <img :src="template.file_path" class="absolute inset-0 w-full h-full object-cover"
+                                    alt="Template Background" />
 
-                                        <template x-if="!slot">
-                                            <span x-text="`Slot ${slotIndex + 1}`"></span>
-                                        </template>
+                                <!-- Grid slots overlay di atas background -->
+                                <div class="absolute inset-0 grid grid-cols-2 gap-4 p-4 h-max">
+                                    <template x-for="(slot, slotIndex) in templateSlots[templateIndex]"
+                                        :key="slotIndex">
+                                        <div class="w-full aspect-square rounded-xl border-2 border-dashed flex items-center justify-center cursor-pointer overflow-hidden"
+                                            :class="slot ? 'border-blue-500 bg-transparent' :
+                                                'border-gray-400/50 bg-gray-900/30'"
+                                            @click="templateSlots[templateIndex][slotIndex] = null">
 
-                                        <template x-if="slot">
-                                            <img :src="slot" class="w-full h-full object-cover rounded-lg" />
-                                        </template>
-                                    </div>
-                                </template>
+                                            <template x-if="!slot">
+                                                <span class="text-white text-xs bg-black/50 px-2 py-1 rounded"
+                                                    x-text="`Slot ${slotIndex + 1}`"></span>
+                                            </template>
+
+                                            <template x-if="slot">
+                                                <img :src="slot" class="w-full h-full object-cover" />
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
                             </div>
                         </div>
                     </template>

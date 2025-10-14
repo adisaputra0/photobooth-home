@@ -59,7 +59,14 @@ class PhotoboothController extends Controller
     }
     public function final() {
         $photos = PhotoboothPhoto::all();
-        $templates = PhotoboothTemplate::all()->keyBy('id');
+        $templates = PhotoboothTemplate::all()->keyBy('id')->map(function($template) {
+            return [
+                'id' => $template->id,
+                'name' => $template->name,
+                'file_path' => asset($template->file_path), // Pastikan asset() digunakan
+                'slots' => $template->slots
+            ];
+        });
         return view('photobooth.final', ['photos' => $photos, 'templates' => $templates]);
     }
 }
