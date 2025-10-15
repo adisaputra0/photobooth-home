@@ -77,7 +77,16 @@
                     <!-- Main Content Grid -->
                     <div class="grid md:grid-cols-2 gap-6 mb-6">
                         <!-- Left -->
-                        <div class="space-y-6">
+                        <div class="space-y-6" x-data="{
+                            files: [],
+                            handleFileUpload(e) {
+                                this.files = Array.from(e.target.files);
+                            },
+                            cancelUpload() {
+                                this.files = [];
+                                $refs.fileInput.value = '';
+                            }
+                        }">
                             <!-- Jumlah Orang -->
                             <div>
                                 <label class="text-gray-300 mb-3">Masukkan Jumlah Orang</label>
@@ -85,6 +94,7 @@
                                     id="numPeople"
                                     class="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-gray-500 transition-all duration-300" />
                             </div>
+
                             <!-- Jumlah Bando -->
                             <div class="space-y-3">
                                 <label class="text-gray-300">Jumlah Bando</label>
@@ -95,6 +105,7 @@
                                 <input type="number" x-model.number="numBando" min="0"
                                     class="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-gray-500 transition-all duration-300" />
                             </div>
+
                             <!-- Penambahan Waktu -->
                             <div class="space-y-3">
                                 <label class="text-gray-300">Penambahan Waktu</label>
@@ -111,25 +122,37 @@
 
                             <!-- Upload File -->
                             <div class="space-y-3">
-                                <label class="text-gray-300">Pilih folder foto anda</label>
-                                <p class="text-sm text-gray-400">
-                                    Pastikan foto yang diupload sesuai dengan foto anda
+                                <label class="text-gray-300">Pilih folder foto Anda</label>
+                                <p class="text-sm text-gray-400">Pastikan foto yang diupload sesuai dengan hasil sesi Anda
                                 </p>
+
                                 <label for="fileUpload"
                                     class="flex items-center justify-center gap-3 cursor-pointer bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-gray-300 hover:bg-gray-700/70 transition-all duration-300">
                                     <i class="fa-solid fa-upload text-blue-400"></i>
                                     <span>Pilih File</span>
                                 </label>
+
                                 <input type="file" id="fileUpload" accept="image/*" name="photos[]" class="hidden"
-                                    @change="fileName = $event.target.files[0]?.name" multiple required />
-                                <template x-if="fileName">
-                                    <p class="text-sm text-green-400 truncate">
-                                        <i class="fa-solid fa-check mr-1"></i>
-                                        <span x-text="fileName"></span>
-                                    </p>
+                                    multiple required x-ref="fileInput" @change="handleFileUpload($event)" />
+
+                                <!-- Info File Uploaded -->
+                                <template x-if="files.length > 0">
+                                    <div
+                                        class="bg-green-600/10 border border-green-500/30 rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm">
+                                        <div class="text-green-400">
+                                            <i class="fa-solid fa-check mr-1"></i>
+                                            <span x-text="files.length + ' foto berhasil diupload'"></span>
+                                        </div>
+                                        <button @click="cancelUpload" type="button"
+                                            class="text-red-400 hover:text-red-300 transition-colors text-sm flex items-center gap-1">
+                                            <i class="fa-solid fa-xmark"></i> Batal
+                                        </button>
+                                    </div>
                                 </template>
                             </div>
                         </div>
+
+
 
                         <!-- Right -->
                         <div
