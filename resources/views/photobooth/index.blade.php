@@ -71,22 +71,31 @@
                     </p>
                 </div>
 
-                <form action="{{ route('photobooth.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('photobooth.store') }}" method="POST" enctype="multipart/form-data"
+                    x-data="{
+                        files: [],
+                        showAlert: false,
+                        handleFileUpload(e) {
+                            this.files = Array.from(e.target.files);
+                        },
+                        cancelUpload() {
+                            this.files = [];
+                            $refs.fileInput.value = '';
+                        },
+                        validateBeforeSubmit(e) {
+                            if (this.files.length === 0) {
+                                e.preventDefault();
+                                this.showAlert = true;
+                                setTimeout(() => this.showAlert = false, 3000);
+                            }
+                        }
+                    }">
                     @csrf
                     @method('POST')
                     <!-- Main Content Grid -->
                     <div class="grid md:grid-cols-2 gap-6 mb-6">
                         <!-- Left -->
-                        <div class="space-y-6" x-data="{
-                            files: [],
-                            handleFileUpload(e) {
-                                this.files = Array.from(e.target.files);
-                            },
-                            cancelUpload() {
-                                this.files = [];
-                                $refs.fileInput.value = '';
-                            }
-                        }">
+                        <div class="space-y-6">
                             <!-- Jumlah Orang -->
                             <div>
                                 <label class="text-gray-300 mb-3">Masukkan Jumlah Orang</label>
@@ -151,8 +160,6 @@
                                 </template>
                             </div>
                         </div>
-
-
 
                         <!-- Right -->
                         <div
@@ -323,10 +330,16 @@
                     </div>
 
                     <div class="flex justify-end mt-6">
-                        <button type="submit"
+                        <button type="submit" @click="validateBeforeSubmit($event)"
                             class="cursor-pointer bg-blue-600 border border-blue-700/50 rounded-xl px-6 py-3 text-white hover:bg-blue-700 transition-all duration-300 shadow-lg">
                             Lanjut ke Pemilihan Template →
                         </button>
+                    </div>
+                    <!-- Alert jika belum upload -->
+                    <div x-show="showAlert" x-transition
+                        class="fixed bottom-8 right-6 bg-red-600 text-white px-4 py-5 rounded-xl shadow-lg border border-red-500/50 text-sm">
+                        <i class="fa-solid fa-triangle-exclamation mr-2"></i>
+                        Silakan upload foto terlebih dahulu sebelum melanjutkan!
                     </div>
                 </form>
             </div>
