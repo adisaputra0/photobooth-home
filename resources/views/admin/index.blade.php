@@ -108,12 +108,8 @@
                                 <td class="px-6 py-4">
                                     <form action="{{ route('booking.addNote', $booking->id) }}" method="POST">
                                         @csrf
-                                        <textarea 
-                                            name="note" 
-                                            placeholder="Tulis catatan..."
-                                            class="bg-transparent"
-                                            onkeydown="if(event.key === 'Enter'){ event.preventDefault(); this.form.submit(); }"
-                                        >{{ $booking->note }}</textarea>
+                                        <textarea name="note" placeholder="Tulis catatan..." class="bg-transparent"
+                                            onkeydown="if(event.key === 'Enter'){ event.preventDefault(); this.form.submit(); }">{{ $booking->note }}</textarea>
                                     </form>
                                 </td>
                                 <td class="px-6 py-4">
@@ -134,6 +130,11 @@
             </div>
         @endforeach
         <div class="flex justify-end gap-x-2">
+            <a href="{{ route('photobooth.template.admin') }}"
+                class="inline-block focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300
+        font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-green-600 dark:hover:bg-green-700
+        dark:focus:ring-red-900 mt-10"><i
+                    class="fa-solid fa-tag mr-2"></i>Edit Template Photobooth</a>
             <a href="{{ route('harga') }}"
                 class="inline-block focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300
         font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-green-600 dark:hover:bg-green-700

@@ -79,3 +79,9 @@ Route::post("/photobooth/store", [PhotoboothController::class, "store"])->name("
 Route::get("photobooth/template", [PhotoboothTemplateController::class, "index"])->name("photobooth.template");
 Route::get("photobooth/final", [PhotoboothController::class, "final"])->name("photobooth.final");
 
+Route::get("admin/photobooth/template", [PhotoboothTemplateController::class, "index_admin"])->middleware("auth")->name("photobooth.template.admin");
+Route::get("admin/photobooth/template/create", [PhotoboothTemplateController::class, "create"])->middleware("auth")->name("photobooth.template.create");
+Route::get("admin/photobooth/template/edit/{id}", [PhotoboothTemplateController::class, "edit"])->middleware("auth")->name("photobooth.template.edit");
+Route::post("admin/photobooth/template", [PhotoboothTemplateController::class, "store"])->middleware("auth")->name("photobooth.template.store");
+Route::post("admin/photobooth/template/edit", [PhotoboothTemplateController::class, "update"])->middleware("auth")->name("photobooth.template.update");
+Route::delete("admin/photobooth/template/delete/{id}", [PhotoboothTemplateController::class, "destroy"])->middleware("auth")->name("photobooth.template.destroy");
