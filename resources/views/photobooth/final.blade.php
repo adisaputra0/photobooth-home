@@ -133,7 +133,7 @@
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         <template x-for="(photo, index) in uploadedPhotos" :key="index">
                             <img :src="photo" @click="selectPhotoAuto(activeTemplate || 0, photo)"
-                                class="w-full h-28 object-cover rounded-xl border border-gray-700 hover:border-blue-500 cursor-pointer transition-all duration-200" />
+                                class="w-full aspect-[9/16] object-cover rounded-xl border border-gray-700 hover:border-blue-500 cursor-pointer transition-all duration-200" />
                         </template>
                     </div>
                 </div>
