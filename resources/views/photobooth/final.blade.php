@@ -93,17 +93,73 @@
                     parent.dataset.panzoomInitialized = true;
                     parent.panzoomInstance = panzoom;
                 });
-            }
+            },
+            printTemplate(index) {
+                const element = document.getElementById(`template-container-${index}`);
+                if (!element) return alert('Template tidak ditemukan');
         
+                // Gunakan html2canvas untuk ambil tampilan asli
+                html2canvas(element, {
+                    scale: 2, // resolusi lebih tinggi biar tidak blur
+                    useCORS: true
+                }).then(canvas => {
+                    const image = canvas.toDataURL('image/png');
+        
+                    const printWindow = window.open('', '_blank');
+                    const html = `
+                    <html>
+                    <head>
+                        <title>Print Template</title>
+                        <style>
+                            @page {
+                                size: 4in 6in; /* Ukuran 4R */
+                                margin: 0;
+                            }
+                            body {
+                                margin: 0;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                background: black;
+                                height: 100vh;
+                            }
+                            img {
+                                width: 100%;
+                                height: auto;
+                                object-fit: contain;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <img src='${image}' alt='Template Print' />
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                                setTimeout(() => window.close(), 1000);
+                            };
+                        </script>
+                    </body>
+                    </html>
+                `;
+        
+                    printWindow.document.open();
+                    printWindow.document.write(html);
+                    printWindow.document.close();
+                });
+            }
         }"
             class="relative max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 sm:p-8 shadow-2xl">
 
             <!-- Panzoom CDN -->
             <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
 
+            {{-- Canvas CDN --}}
+            <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
             <!-- Countdown Timer -->
             <div
-                class="absolute top-4 right-6 bg-gray-900/70 border border-gray-700/50 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-md">
+                class="absolute top-4 right-6 bg-gray-900/70 border border-gray-700/50 text-white px-4 py-2
+            rounded-xl text-sm font-semibold shadow-md">
                 ⏱️ <span x-text="formatTime(remainingTime)"></span>
             </div>
 
@@ -144,11 +200,18 @@
 
                     <template x-for="(template, templateIndex) in selectedTemplates" :key="templateIndex">
                         <div class="mb-6">
-                            <h3 class="text-gray-300 text-sm mb-3" x-text="`${template.name} (${template.slots} slots)`">
-                            </h3>
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-gray-300 text-sm" x-text="`${template.name} (${template.slots} slots)`">
+                                </h3>
+                                <button @click="printTemplate(templateIndex)"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
+                                    🖨️ Print 4R
+                                </button>
+                            </div>
 
                             <!-- Template Container -->
-                            <div class="relative w-full h-[800px] rounded-xl overflow-hidden border-2 border-gray-700/50">
+                            <div :id="`template-container-${templateIndex}`"
+                                class="relative w-full h-[800px] rounded-xl overflow-hidden border-2 border-gray-700/50 bg-black">
                                 <img :src="template.file_path"
                                     class="absolute inset-0 w-full h-full object-cover opacity-60"
                                     alt="Template Background" />
@@ -160,28 +223,19 @@
                                         <div class="zoom-container group relative w-full aspect-square rounded-xl border-2 border-dashed flex items-center justify-center cursor-grab overflow-hidden bg-gray-900/30 transition"
                                             :class="slot ? 'border-blue-500' : 'border-gray-400/50'">
 
-                                            <!-- Jika belum ada foto -->
                                             <template x-if="!slot">
                                                 <span class="text-white text-xs bg-black/50 px-2 py-1 rounded"
                                                     x-text="`Slot ${slotIndex + 1}`"></span>
                                             </template>
 
-                                            <!-- Jika sudah ada foto -->
                                             <template x-if="slot">
                                                 <div class="relative w-full h-full">
-                                                    <!-- Foto -->
                                                     <img :src="slot"
                                                         class="zoomable w-full h-full object-cover transition-transform duration-200" />
-
-                                                    <!-- Tombol hapus muncul saat hover -->
                                                     <button
-                                                        @click.stop="
-    templateSlots[templateIndex][slotIndex] = null;
-    $nextTick(() => initPanzoom());
-"
+                                                        @click.stop="templateSlots[templateIndex][slotIndex] = null; $nextTick(() => initPanzoom());"
                                                         class="absolute top-1 right-1 bg-red-600/80 hover:bg-red-700 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md"
-                                                        title="Hapus Foto">
-                                                        ✕
+                                                        title="Hapus Foto">✕
                                                     </button>
                                                 </div>
                                             </template>
@@ -190,6 +244,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </template>
                 </div>
             </div>
