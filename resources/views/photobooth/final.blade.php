@@ -107,40 +107,40 @@
         
                     const printWindow = window.open('', '_blank');
                     const html = `
-                    <html>
-                    <head>
-                        <title>Print Template</title>
-                        <style>
-                            @page {
-                                size: 4in 6in; /* Ukuran 4R */
-                                margin: 0;
-                            }
-                            body {
-                                margin: 0;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                background: black;
-                                height: 100vh;
-                            }
-                            img {
-                                width: 100%;
-                                height: auto;
-                                object-fit: contain;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <img src='${image}' alt='Template Print' />
-                        <script>
-                            window.onload = function() {
-                                window.print();
-                                setTimeout(() => window.close(), 1000);
-                            };
-                        </script>
-                    </body>
-                    </html>
-                `;
+                                            <html>
+                                            <head>
+                                                <title>Print Template</title>
+                                                <style>
+                                                    @page {
+                                                        size: 4in 6in; /* Ukuran 4R */
+                                                        margin: 0;
+                                                    }
+                                                    body {
+                                                        margin: 0;
+                                                        display: flex;
+                                                        align-items: center;
+                                                        justify-content: center;
+                                                        background: black;
+                                                        height: 100vh;
+                                                    }
+                                                    img {
+                                                        width: 100%;
+                                                        height: auto;
+                                                        object-fit: contain;
+                                                    }
+                                                </style>
+                                            </head>
+                                            <body>
+                                                <img src='${image}' alt='Template Print' />
+                                                <script>
+                                                    window.onload = function() {
+                                                        window.print();
+                                                        setTimeout(() => window.close(), 1000);
+                                                    };
+                                                </script>
+                                            </body>
+                                            </html>
+                                        `;
         
                     printWindow.document.open();
                     printWindow.document.write(html);
@@ -231,7 +231,7 @@
                                             <template x-if="slot">
                                                 <div class="relative w-full h-full">
                                                     <img :src="slot"
-                                                        class="zoomable w-full h-full object-cover transition-transform duration-200" />
+                                                        class="zoomable w-full h-full transition-transform duration-200" />
                                                     <button
                                                         @click.stop="templateSlots[templateIndex][slotIndex] = null; $nextTick(() => initPanzoom());"
                                                         class="absolute top-1 right-1 bg-red-600/80 hover:bg-red-700 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md"
