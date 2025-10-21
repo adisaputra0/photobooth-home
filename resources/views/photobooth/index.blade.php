@@ -14,14 +14,14 @@
         hargaTambahanWaktu: {{ $hargaTambahanWaktu }},
         get totalPrice() {
             let total = this.numPeople * this.pricePerPerson;
-    
+
             // Tambahan waktu
             if (this.timeAddition === '5') total += this.hargaTambahanWaktu;
             else if (this.timeAddition === '10') total += this.hargaTambahanWaktu * 2;
-    
+
             // Tambahan bando
             total += this.numBando * this.hargaBando;
-    
+
             return total;
         },
         handleBonusAccept() {

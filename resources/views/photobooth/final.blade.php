@@ -107,46 +107,69 @@
         
                     const printWindow = window.open('', '_blank');
                     const html = `
-                                            <html>
-                                            <head>
-                                                <title>Print Template</title>
-                                                <style>
-                                                    @page {
-                                                        size: 4in 6in; /* Ukuran 4R */
-                                                        margin: 0;
-                                                    }
-                                                    body {
-                                                        margin: 0;
-                                                        display: flex;
-                                                        align-items: center;
-                                                        justify-content: center;
-                                                        background: black;
-                                                        height: 100vh;
-                                                    }
-                                                    img {
-                                                        width: 100%;
-                                                        height: auto;
-                                                        object-fit: contain;
-                                                    }
-                                                </style>
-                                            </head>
-                                            <body>
-                                                <img src='${image}' alt='Template Print' />
-                                                <script>
-                                                    window.onload = function() {
-                                                        window.print();
-                                                        setTimeout(() => window.close(), 1000);
-                                                    };
-                                                </script>
-                                            </body>
-                                            </html>
-                                        `;
+                                                    <html>
+                                                    <head>
+                                                        <title>Print Template</title>
+                                                        <style>
+                                                            @page {
+                                                                size: 4in 6in; /* Ukuran 4R */
+                                                                margin: 0;
+                                                            }
+                                                            body {
+                                                                margin: 0;
+                                                                display: flex;
+                                                                align-items: center;
+                                                                justify-content: center;
+                                                                background: black;
+                                                                height: 100vh;
+                                                            }
+                                                            img {
+                                                                width: 100%;
+                                                                height: auto;
+                                                                object-fit: contain;
+                                                            }
+                                                        </style>
+                                                    </head>
+                                                    <body>
+                                                        <img src='${image}' alt='Template Print' />
+                                                        <script>
+                                                            window.onload = function() {
+                                                                window.print();
+                                                                setTimeout(() => window.close(), 1000);
+                                                            };
+                                                        </script>
+                                                    </body>
+                                                    </html>
+                                                `;
         
                     printWindow.document.open();
                     printWindow.document.write(html);
                     printWindow.document.close();
                 });
-            }
+            },
+            downloadTemplate(index) {
+                const element = document.getElementById(`template-container-${index}`);
+                if (!element) return alert('Template tidak ditemukan');
+        
+                html2canvas(element, {
+                    scale: 2, // resolusi tinggi
+                    useCORS: true,
+                    backgroundColor: '#000', // agar tidak transparan
+                }).then(canvas => {
+                    // Konversi ke JPEG (bukan PNG)
+                    const image = canvas.toDataURL('image/jpeg', 1.0); // kualitas maksimum (HD)
+        
+                    // Buat link download otomatis
+                    const link = document.createElement('a');
+                    link.href = image;
+                    link.download = `template-${index + 1}.jpg`;
+                    link.click();
+                }).catch(err => {
+                    console.error('Gagal mengunduh template:', err);
+                    alert('Terjadi kesalahan saat mengunduh template.');
+                });
+            },
+        
         }"
             class="relative max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 sm:p-8 shadow-2xl">
 
@@ -203,10 +226,17 @@
                             <div class="flex items-center justify-between mb-3">
                                 <h3 class="text-gray-300 text-sm" x-text="`${template.name} (${template.slots} slots)`">
                                 </h3>
-                                <button @click="printTemplate(templateIndex)"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
-                                    🖨️ Print 4R
-                                </button>
+                                <div class="flex gap-2">
+                                    <button @click="printTemplate(templateIndex)"
+                                        class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
+                                        🖨️ Print 4R
+                                    </button>
+
+                                    <button @click="downloadTemplate(templateIndex)"
+                                        class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
+                                        💾 Download HD
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- Template Container -->
