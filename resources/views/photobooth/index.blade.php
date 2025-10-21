@@ -14,14 +14,14 @@
         hargaTambahanWaktu: {{ $hargaTambahanWaktu }},
         get totalPrice() {
             let total = this.numPeople * this.pricePerPerson;
-
+    
             // Tambahan waktu
             if (this.timeAddition === '5') total += this.hargaTambahanWaktu;
             else if (this.timeAddition === '10') total += this.hargaTambahanWaktu * 2;
-
+    
             // Tambahan bando
             total += this.numBando * this.hargaBando;
-
+    
             return total;
         },
         handleBonusAccept() {
@@ -130,7 +130,7 @@
                             </div>
 
                             <!-- Upload File -->
-                            <div class="space-y-3">
+                            {{-- <div class="space-y-3">
                                 <label class="text-gray-300">Pilih folder foto Anda</label>
                                 <p class="text-sm text-gray-400">Pastikan foto yang diupload sesuai dengan hasil sesi Anda
                                 </p>
@@ -158,7 +158,7 @@
                                         </button>
                                     </div>
                                 </template>
-                            </div>
+                            </div> --}}
                         </div>
 
                         <!-- Right -->
@@ -330,7 +330,12 @@
                     </div>
 
                     <div class="flex justify-end mt-6">
-                        <button type="submit" @click="validateBeforeSubmit($event)"
+                        {{-- <button type="submit" @click="validateBeforeSubmit($event)"
+                            class="cursor-pointer bg-blue-600 border border-blue-700/50 rounded-xl px-6 py-3 text-white hover:bg-blue-700 transition-all duration-300 shadow-lg">
+                            Lanjut ke Pemilihan Template →
+                        </button> --}}
+
+                        <button type="submit"
                             class="cursor-pointer bg-blue-600 border border-blue-700/50 rounded-xl px-6 py-3 text-white hover:bg-blue-700 transition-all duration-300 shadow-lg">
                             Lanjut ke Pemilihan Template →
                         </button>

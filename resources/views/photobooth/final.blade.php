@@ -1,9 +1,34 @@
+@php
+    use Illuminate\Support\Facades\File;
+
+    // Ambil semua file gambar dari folder uploads/photobooth
+    $photoDirectory = public_path('uploads/photobooth');
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+    $photos = [];
+
+    if (File::exists($photoDirectory)) {
+        $files = File::files($photoDirectory);
+
+        foreach ($files as $file) {
+            $extension = strtolower($file->getExtension());
+            if (in_array($extension, $allowedExtensions)) {
+                // Buat URL yang bisa diakses browser
+                $photos[] = asset('uploads/photobooth/' . $file->getFilename());
+            }
+        }
+    }
+
+    // Ambil data templates (sesuaikan dengan sumber data template Anda)
+    // Jika templates juga perlu diambil dari folder/file, sesuaikan di sini
+    $templates = $templates ?? []; // Ganti dengan logic pengambilan template Anda
+@endphp
+
 @extends('layouts.photobooth')
 
 @section('content')
     <div class="bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen p-4 sm:p-8">
         <div x-data="{
-            uploadedPhotos: {{ Js::from($photos->map(fn($p) => asset($p->file_path))) }},
+            uploadedPhotos: {{ Js::from($photos) }},
             templates: {{ Js::from($templates) }},
             selectedTemplates: [],
             templateSlots: {},
@@ -107,40 +132,40 @@
         
                     const printWindow = window.open('', '_blank');
                     const html = `
-                                                    <html>
-                                                    <head>
-                                                        <title>Print Template</title>
-                                                        <style>
-                                                            @page {
-                                                                size: 4in 6in; /* Ukuran 4R */
-                                                                margin: 0;
-                                                            }
-                                                            body {
-                                                                margin: 0;
-                                                                display: flex;
-                                                                align-items: center;
-                                                                justify-content: center;
-                                                                background: black;
-                                                                height: 100vh;
-                                                            }
-                                                            img {
-                                                                width: 100%;
-                                                                height: auto;
-                                                                object-fit: contain;
-                                                            }
-                                                        </style>
-                                                    </head>
-                                                    <body>
-                                                        <img src='${image}' alt='Template Print' />
-                                                        <script>
-                                                            window.onload = function() {
-                                                                window.print();
-                                                                setTimeout(() => window.close(), 1000);
-                                                            };
-                                                        </script>
-                                                    </body>
-                                                    </html>
-                                                `;
+                                                                    <html>
+                                                                    <head>
+                                                                        <title>Print Template</title>
+                                                                        <style>
+                                                                            @page {
+                                                                                size: 4in 6in; /* Ukuran 4R */
+                                                                                margin: 0;
+                                                                            }
+                                                                            body {
+                                                                                margin: 0;
+                                                                                display: flex;
+                                                                                align-items: center;
+                                                                                justify-content: center;
+                                                                                background: black;
+                                                                                height: 100vh;
+                                                                            }
+                                                                            img {
+                                                                                width: 100%;
+                                                                                height: auto;
+                                                                                object-fit: contain;
+                                                                            }
+                                                                        </style>
+                                                                    </head>
+                                                                    <body>
+                                                                        <img src='${image}' alt='Template Print' />
+                                                                        <script>
+                                                                            window.onload = function() {
+                                                                                window.print();
+                                                                                setTimeout(() => window.close(), 1000);
+                                                                            };
+                                                                        </script>
+                                                                    </body>
+                                                                    </html>
+                                                                `;
         
                     printWindow.document.open();
                     printWindow.document.write(html);

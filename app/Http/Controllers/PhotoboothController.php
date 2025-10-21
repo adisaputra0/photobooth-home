@@ -12,10 +12,10 @@ class PhotoboothController extends Controller
     //
     public function index()
     {
-        $photos = PhotoboothPhoto::all();
-        if($photos){
-            $this->destroyAll();
-        }
+        // $photos = PhotoboothPhoto::all();
+        // if($photos){
+        //     $this->destroyAll();
+        // }
         $hargaPhotobox = HargaPaket::where("nama_paket", "photobox")->first();
         $hargaBando = 5000;
         $hargaTambahanWaktu = 15000;
@@ -58,7 +58,7 @@ class PhotoboothController extends Controller
         return redirect()->route('photobooth');
     }
     public function final() {
-        $photos = PhotoboothPhoto::all();
+        // $photos = PhotoboothPhoto::all();
         $templates = PhotoboothTemplate::all()->keyBy('id')->map(function($template) {
             return [
                 'id' => $template->id,
@@ -67,6 +67,7 @@ class PhotoboothController extends Controller
                 'slots' => $template->slots
             ];
         });
-        return view('photobooth.final', ['photos' => $photos, 'templates' => $templates]);
+        // return view('photobooth.final', ['photos' => $photos, 'templates' => $templates]);
+        return view('photobooth.final', ['templates' => $templates]);
     }
 }
