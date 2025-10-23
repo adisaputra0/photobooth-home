@@ -26,6 +26,38 @@
 @extends('layouts.photobooth')
 
 @section('content')
+    <style>
+        /* Container untuk panzoom - harus relative dan hide overflow */
+        .zoom-container {
+            position: relative;
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        .zoom-container:active {
+            cursor: grabbing;
+        }
+
+        /* Gambar zoomable - PENTING: jangan gunakan object-fit! */
+        .zoomable {
+            display: block;
+            max-width: none;
+            max-height: none;
+            transform-origin: center center;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* Optional: smooth transition saat reset (double click) */
+        .zoomable {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Disable transition saat user sedang drag (agar tidak lag) */
+        .zoom-container:active .zoomable {
+            transition: none;
+        }
+    </style>
     <div class="bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen p-4 sm:p-8">
         <div x-data="{
             uploadedPhotos: {{ Js::from($photos) }},
@@ -96,29 +128,71 @@
                     const parent = img.closest('.zoom-container');
                     if (!parent) return;
         
-                    // Reset Panzoom sebelumnya jika ada
+                    // Cleanup instance sebelumnya
                     if (parent.panzoomInstance) {
                         parent.panzoomInstance.destroy();
+                        parent.removeEventListener('wheel', parent.wheelHandler);
                         delete parent.panzoomInstance;
+                        delete parent.wheelHandler;
                     }
         
-                    const panzoom = Panzoom(img, {
-                        maxScale: 5,
-                        minScale: 1,
-                        contain: 'outside',
-                        step: 0.1,
-                    });
+                    const initializePanzoom = () => {
+                        const containerW = parent.offsetWidth;
+                        const containerH = parent.offsetHeight;
+                        const naturalW = img.naturalWidth;
+                        const naturalH = img.naturalHeight;
         
-                    parent.addEventListener('wheel', panzoom.zoomWithWheel);
-                    img.addEventListener('dblclick', () => panzoom.reset());
+                        if (!naturalW || !naturalH || !containerW || !containerH) return;
         
-                    parent.addEventListener('mousedown', () => parent.style.cursor = 'grabbing');
-                    parent.addEventListener('mouseup', () => parent.style.cursor = 'grab');
+                        // Hitung scale agar gambar fit ke container (CONTAIN, bukan COVER)
+                        // Ini akan menampilkan seluruh gambar tanpa cropping
+                        const fitScale = Math.min(containerW / naturalW, containerH / naturalH);
         
-                    parent.dataset.panzoomInitialized = true;
-                    parent.panzoomInstance = panzoom;
+                        // Posisi center
+                        const scaledW = naturalW * fitScale;
+                        const scaledH = naturalH * fitScale;
+                        const initialX = (containerW - scaledW) / 2;
+                        const initialY = (containerH - scaledH) / 2;
+        
+                        const panzoom = Panzoom(img, {
+                            maxScale: 5, // Zoom in maksimal
+                            minScale: fitScale, // ✅ Gunakan fitScale (bukan coverScale)
+                            startScale: fitScale, // ✅ Mulai dengan tampilan penuh
+                            startX: initialX,
+                            startY: initialY,
+                            contain: 'outside',
+                            cursor: 'grab',
+                            step: 0.1,
+                        });
+        
+                        const wheelHandler = (e) => {
+                            e.preventDefault();
+                            panzoom.zoomWithWheel(e);
+                        };
+                        parent.addEventListener('wheel', wheelHandler, { passive: false });
+                        parent.wheelHandler = wheelHandler;
+        
+                        // Double click reset
+                        img.addEventListener('dblclick', () => {
+                            panzoom.zoom(fitScale, { animate: true });
+                            panzoom.pan(initialX, initialY, { animate: true });
+                        });
+        
+                        // Cursor feedback
+                        parent.addEventListener('mousedown', () => parent.style.cursor = 'grabbing');
+                        parent.addEventListener('mouseup', () => parent.style.cursor = 'grab');
+        
+                        parent.panzoomInstance = panzoom;
+                    };
+        
+                    if (img.complete && img.naturalWidth > 0) {
+                        initializePanzoom();
+                    } else {
+                        img.addEventListener('load', initializePanzoom, { once: true });
+                    }
                 });
             },
+        
             printTemplate(index) {
                 const element = document.getElementById(`template-container-${index}`);
                 if (!element) return alert('Template tidak ditemukan');
@@ -132,40 +206,40 @@
         
                     const printWindow = window.open('', '_blank');
                     const html = `
-                                                                    <html>
-                                                                    <head>
-                                                                        <title>Print Template</title>
-                                                                        <style>
-                                                                            @page {
-                                                                                size: 4in 6in; /* Ukuran 4R */
-                                                                                margin: 0;
-                                                                            }
-                                                                            body {
-                                                                                margin: 0;
-                                                                                display: flex;
-                                                                                align-items: center;
-                                                                                justify-content: center;
-                                                                                background: black;
-                                                                                height: 100vh;
-                                                                            }
-                                                                            img {
-                                                                                width: 100%;
-                                                                                height: auto;
-                                                                                object-fit: contain;
-                                                                            }
-                                                                        </style>
-                                                                    </head>
-                                                                    <body>
-                                                                        <img src='${image}' alt='Template Print' />
-                                                                        <script>
-                                                                            window.onload = function() {
-                                                                                window.print();
-                                                                                setTimeout(() => window.close(), 1000);
-                                                                            };
-                                                                        </script>
-                                                                    </body>
-                                                                    </html>
-                                                                `;
+                                                                                                                                                                            <html>
+                                                                                                                                                                            <head>
+                                                                                                                                                                                <title>Print Template</title>
+                                                                                                                                                                                <style>
+                                                                                                                                                                                    @page {
+                                                                                                                                                                                        size: 4in 6in; /* Ukuran 4R */
+                                                                                                                                                                                        margin: 0;
+                                                                                                                                                                                    }
+                                                                                                                                                                                    body {
+                                                                                                                                                                                        margin: 0;
+                                                                                                                                                                                        display: flex;
+                                                                                                                                                                                        align-items: center;
+                                                                                                                                                                                        justify-content: center;
+                                                                                                                                                                                        background: black;
+                                                                                                                                                                                        height: 100vh;
+                                                                                                                                                                                    }
+                                                                                                                                                                                    img {
+                                                                                                                                                                                        width: 100%;
+                                                                                                                                                                                        height: auto;
+                                                                                                                                                                                        object-fit: contain;
+                                                                                                                                                                                    }
+                                                                                                                                                                                </style>
+                                                                                                                                                                            </head>
+                                                                                                                                                                            <body>
+                                                                                                                                                                                <img src='${image}' alt='Template Print' />
+                                                                                                                                                                                <script>
+                                                                                                                                                                                    window.onload = function() {
+                                                                                                                                                                                        window.print();
+                                                                                                                                                                                        setTimeout(() => window.close(), 1000);
+                                                                                                                                                                                    };
+                                                                                                                                                                                </script>
+                                                                                                                                                                            </body>
+                                                                                                                                                                            </html>
+                                                                                                                                                                        `;
         
                     printWindow.document.open();
                     printWindow.document.write(html);
@@ -286,7 +360,7 @@
                                             <template x-if="slot">
                                                 <div class="relative w-full h-full">
                                                     <img :src="slot"
-                                                        class="zoomable w-full h-full transition-transform duration-200" />
+                                                        class="zoomable transition-transform duration-200" />
                                                     <button
                                                         @click.stop="templateSlots[templateIndex][slotIndex] = null; $nextTick(() => initPanzoom());"
                                                         class="absolute top-1 right-1 bg-red-600/80 hover:bg-red-700 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md"
