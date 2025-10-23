@@ -114,7 +114,7 @@
                     return 'grid-cols-1 p-6 pb-24';
                 } else if (slots === 4) {
                     // 4 slots: Grid 2x2 dengan gap sedang dan padding bawah
-                    return 'grid-cols-2 gap-4 p-6 pb-20';
+                    return 'grid-cols-2 gap-x-3 gap-2 p-10 pt-10 pb-24';
                 } else if (slots === 6) {
                     // 6 slots: Grid 3x2 dengan gap kecil dan padding lebih banyak
                     return 'grid-cols-2 gap-y-0 gap-x-10 p-[3rem_2rem]';
@@ -133,7 +133,7 @@
                     return 'aspect-[3/4]';
                 } else if (slots === 4) {
                     // 4 slots: Aspect ratio square-ish untuk balanced layout
-                    return 'aspect-[3/4]';
+                    return 'aspect-[2/3]';
                 } else if (slots === 6) {
                     // 6 slots: Aspect ratio lebih compact
                     return 'aspect-[1/1]';
@@ -356,7 +356,7 @@
                             <div :id="`template-container-${templateIndex}`"
                                 class="relative w-full h-[800px] overflow-hidden border-2 border-gray-700/50 bg-black">
                                 <img :src="template.file_path"
-                                    class="absolute inset-0 w-full h-full object-cover opacity-60"
+                                    class="absolute inset-0 w-full h-full object-cover opacity-100"
                                     alt="Template Background" />
 
                                 <!-- 🆕 Slot Grid dengan Dynamic Class berdasarkan jumlah slot -->
