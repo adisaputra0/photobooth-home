@@ -60,6 +60,10 @@
         scrollbar-width: thin;
         scrollbar-color: #6366f1 rgba(55, 65, 81, 0.3);
     }
+
+    img {
+        will-change: transform;
+    }
     </style>
 
     <div x-data="{
@@ -339,11 +343,14 @@
                         </div>
                     </template>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-3 gap-4">
                         <template x-for="(photo, index) in uploadedPhotos" :key="index">
                             <div class="relative group">
-                                <img :src="photo" @click="selectPhotoAuto(activeTemplate || 0, photo)"
-                                    class="w-full aspect-[9/16] object-cover rounded-xl border border-gray-700 hover:border-blue-500 cursor-pointer transition-all duration-200" />
+                                <img :src="photo"
+                                    loading="lazy"
+                                    @click="selectPhotoAuto(activeTemplate || 0, photo)"
+                                    class="w-full aspect-[2/3] object-cover rounded-xl border border-gray-700 hover:border-blue-500 cursor-pointer transition-all duration-200" />
+
 
                                 <button @click.stop="previewPhoto = photo"
                                     class="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md">
