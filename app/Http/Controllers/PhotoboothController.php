@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\HargaPaket;
 use Illuminate\Http\Request;
 use App\Models\PhotoboothPhoto;
 use App\Models\PhotoboothTemplate;
@@ -16,11 +15,11 @@ class PhotoboothController extends Controller
         // if($photos){
         //     $this->destroyAll();
         // }
-        $hargaPhotobox = HargaPaket::where("nama_paket", "photobox")->first();
+        $hargaPhotobox = 30000;
         $hargaBando = 5000;
         $hargaTambahanWaktu = 15000;
         return view("photobooth.index", [
-            "hargaPhotobox" => $hargaPhotobox->harga,
+            "hargaPhotobox" => $hargaPhotobox,
             "hargaBando" => $hargaBando,
             "hargaTambahanWaktu" => $hargaTambahanWaktu,
         ]);
