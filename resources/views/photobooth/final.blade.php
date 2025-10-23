@@ -330,7 +330,7 @@
                 </div>
 
                 <!-- Right: Template Slots -->
-                <div class="h-[150vh] overflow-auto scrollbar-none">
+                <div class="h-[150vh] overflow-auto scrollbar-none pb-[35rem]">
                     <h2 class="text-gray-200 mb-4 text-center">Template Pilihan</h2>
 
                     <template x-for="(template, templateIndex) in selectedTemplates" :key="templateIndex">
@@ -415,7 +415,7 @@
             <div class="flex-1 leading-relaxed">
                 💡 <strong>Panduan:</strong> Silakan pilih foto untuk setiap template mulai dari orang pertama.
                 Untuk melihat foto lebih jelas, arahkan kursor ke foto lalu klik tombol <em>Preview Gambar</em>.
-                Setelah semua terisi, klik <strong>"Selesai & Generate Hasil"</strong>.
+                Setelah semua terisi, klik <strong>"Print 4R"</strong> untuk print. Klik <strong>"Download HD"</strong> untuk simpan hasil digital. Klik <strong>Selesai</strong> untuk mengakhiri sesi.
             </div>
             <button @click="showTutorialBar = false" class="text-gray-400 hover:text-white transition text-lg leading-none">
                 ✕
