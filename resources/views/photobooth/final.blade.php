@@ -35,6 +35,31 @@
         .zoom-container {
             border: none;
         }
+
+        * Scrollbar Styling */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(55, 65, 81, 0.3); /* abu gelap transparan */
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #3b82f6, #8b5cf6); /* biru ke ungu */
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #2563eb, #7c3aed);
+    }
+
+    /* Untuk Firefox */
+    .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #6366f1 rgba(55, 65, 81, 0.3);
+    }
     </style>
 
     <div x-data="{
@@ -300,7 +325,7 @@
 
             <div class="grid md:grid-cols-2 gap-8">
                 <!-- Left: Foto Upload -->
-                <div class="h-[150vh] overflow-auto scrollbar-none">
+                <div class="h-[100vh] overflow-auto custom-scrollbar">
                     <h2 class="text-gray-200 mb-4 text-center">Foto Anda</h2>
 
                     <template x-if="selectedTemplates.length > 1">
@@ -330,74 +355,72 @@
                 </div>
 
                 <!-- Right: Template Slots -->
-                <div class="h-[150vh] overflow-auto scrollbar-none pb-[35rem]">
-                    <h2 class="text-gray-200 mb-4 text-center">Template Pilihan</h2>
+                <div class="h-[100vh] overflow-auto pb-[10rem] custom-scrollbar">
+    <h2 class="text-gray-200 mb-4 text-center">Template Pilihan</h2>
 
-                    <template x-for="(template, templateIndex) in selectedTemplates" :key="templateIndex">
-                        <div class="mb-6">
-                            <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-gray-300 text-sm"
-                                    x-text="`${template.name} (${template.slots} slots) - Orang ${templateIndex + 1}`">
-                                </h3>
-                                <div class="flex gap-2">
-                                    <button @click="printTemplate(templateIndex)"
-                                        class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
-                                        🖨️ Print 4R
-                                    </button>
+    <template x-for="(template, templateIndex) in selectedTemplates" :key="templateIndex">
+        <div class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-gray-300 text-sm"
+                    x-text="`${template.name} (${template.slots} slots) - Orang ${templateIndex + 1}`">
+                </h3>
+                <div class="flex gap-2">
+                    <button @click="printTemplate(templateIndex)"
+                        class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
+                        🖨️ Print 4R
+                    </button>
 
-                                    <button @click="downloadTemplate(templateIndex)"
-                                        class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
-                                        💾 Download HD
+                    <button @click="downloadTemplate(templateIndex)"
+                        class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
+                        💾 Download HD
+                    </button>
+                </div>
+            </div>
+
+            <!-- Template Container -->
+            <div :id="`template-container-${templateIndex}`"
+                class="relative w-full h-[800px] overflow-hidden border-2 border-gray-700/50 bg-black">
+                <img :src="template.file_path"
+                    class="absolute inset-0 w-full h-full object-cover opacity-100"
+                    alt="Template Background" />
+
+                <!-- Slot Grid -->
+                <div class="absolute inset-0 grid h-full" :class="getGridClass(template)">
+                    <template x-for="(slot, slotIndex) in templateSlots[templateIndex]" :key="slotIndex">
+                        <div class="zoom-container group relative w-full border-2 border-dashed flex items-center justify-center cursor-grab overflow-hidden bg-gray-900/30 transition"
+                            :class="[
+                                slot ? 'border-blue-500' : 'border-gray-400/50',
+                                getSlotAspectClass(template)
+                            ]"
+                            :data-template-index="templateIndex"
+                            :data-slot-index="slotIndex">
+
+                            <template x-if="!slot">
+                                <span class="text-white text-xs bg-black/50 px-2 py-1 rounded"
+                                    x-text="`Slot ${slotIndex + 1}`"></span>
+                            </template>
+
+                            <template x-if="slot">
+                                <div class="relative w-full h-full">
+                                    <img :src="slot" class="zoomable transition-transform duration-200" />
+
+                                    <button
+                                        @click.stop="templateSlots[templateIndex][slotIndex] = null;
+                                                     delete imageTransforms[templateIndex]?.[slotIndex];
+                                                     $nextTick(() => initPanzoom());"
+                                        class="absolute top-1 right-1 bg-red-600/80 hover:bg-red-700 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md"
+                                        title="Hapus Foto">✕
                                     </button>
                                 </div>
-                            </div>
-
-                            <!-- Template Container -->
-                            <div :id="`template-container-${templateIndex}`"
-                                class="relative w-full h-[800px] overflow-hidden border-2 border-gray-700/50 bg-black">
-                                <img :src="template.file_path"
-                                    class="absolute inset-0 w-full h-full object-cover opacity-100"
-                                    alt="Template Background" />
-
-                                <!-- 🆕 Slot Grid dengan Dynamic Class berdasarkan jumlah slot -->
-                                <div class="absolute inset-0 grid h-full"
-                                    :class="getGridClass(template)">
-                                    <template x-for="(slot, slotIndex) in templateSlots[templateIndex]" :key="slotIndex">
-                                        <!-- 🆕 Slot dengan Dynamic Aspect Ratio -->
-                                        <div class="zoom-container group relative w-full border-2 border-dashed flex items-center justify-center cursor-grab overflow-hidden bg-gray-900/30 transition"
-                                            :class="[
-                                                slot ? 'border-blue-500' : 'border-gray-400/50',
-                                                getSlotAspectClass(template)
-                                            ]"
-                                            :data-template-index="templateIndex"
-                                            :data-slot-index="slotIndex">
-
-                                            <template x-if="!slot">
-                                                <span class="text-white text-xs bg-black/50 px-2 py-1 rounded"
-                                                    x-text="`Slot ${slotIndex + 1}`"></span>
-                                            </template>
-
-                                            <template x-if="slot">
-                                                <div class="relative w-full h-full">
-                                                    <img :src="slot"
-                                                        class="zoomable transition-transform duration-200" />
-
-                                                    <button
-                                                        @click.stop="templateSlots[templateIndex][slotIndex] = null;
-                                                                     delete imageTransforms[templateIndex]?.[slotIndex];
-                                                                     $nextTick(() => initPanzoom());"
-                                                        class="absolute top-1 right-1 bg-red-600/80 hover:bg-red-700 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md"
-                                                        title="Hapus Foto">✕
-                                                    </button>
-                                                </div>
-                                            </template>
-                                        </div>
-                                    </template>
-                                </div>
-                            </div>
+                            </template>
                         </div>
                     </template>
                 </div>
+            </div>
+        </div>
+    </template>
+</div>
+
             </div>
 
             <!-- Button -->
