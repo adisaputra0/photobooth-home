@@ -26,7 +26,7 @@
 @extends('layouts.photobooth')
 
 @section('content')
-    <style>
+    {{-- <style>
         /* Container untuk panzoom - harus relative dan hide overflow */
         .zoom-container {
             position: relative;
@@ -57,7 +57,7 @@
         .zoom-container:active .zoomable {
             transition: none;
         }
-    </style>
+    </style> --}}
     <div class="bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen p-4 sm:p-8">
         <div x-data="{
             uploadedPhotos: {{ Js::from($photos) }},
@@ -206,40 +206,40 @@
         
                     const printWindow = window.open('', '_blank');
                     const html = `
-                                                                                                                                                                            <html>
-                                                                                                                                                                            <head>
-                                                                                                                                                                                <title>Print Template</title>
-                                                                                                                                                                                <style>
-                                                                                                                                                                                    @page {
-                                                                                                                                                                                        size: 4in 6in; /* Ukuran 4R */
-                                                                                                                                                                                        margin: 0;
-                                                                                                                                                                                    }
-                                                                                                                                                                                    body {
-                                                                                                                                                                                        margin: 0;
-                                                                                                                                                                                        display: flex;
-                                                                                                                                                                                        align-items: center;
-                                                                                                                                                                                        justify-content: center;
-                                                                                                                                                                                        background: black;
-                                                                                                                                                                                        height: 100vh;
-                                                                                                                                                                                    }
-                                                                                                                                                                                    img {
-                                                                                                                                                                                        width: 100%;
-                                                                                                                                                                                        height: auto;
-                                                                                                                                                                                        object-fit: contain;
-                                                                                                                                                                                    }
-                                                                                                                                                                                </style>
-                                                                                                                                                                            </head>
-                                                                                                                                                                            <body>
-                                                                                                                                                                                <img src='${image}' alt='Template Print' />
-                                                                                                                                                                                <script>
-                                                                                                                                                                                    window.onload = function() {
-                                                                                                                                                                                        window.print();
-                                                                                                                                                                                        setTimeout(() => window.close(), 1000);
-                                                                                                                                                                                    };
-                                                                                                                                                                                </script>
-                                                                                                                                                                            </body>
-                                                                                                                                                                            </html>
-                                                                                                                                                                        `;
+                                                                                                                                                                                            <html>
+                                                                                                                                                                                            <head>
+                                                                                                                                                                                                <title>Print Template</title>
+                                                                                                                                                                                                <style>
+                                                                                                                                                                                                    @page {
+                                                                                                                                                                                                        size: 4in 6in; /* Ukuran 4R */
+                                                                                                                                                                                                        margin: 0;
+                                                                                                                                                                                                    }
+                                                                                                                                                                                                    body {
+                                                                                                                                                                                                        margin: 0;
+                                                                                                                                                                                                        display: flex;
+                                                                                                                                                                                                        align-items: center;
+                                                                                                                                                                                                        justify-content: center;
+                                                                                                                                                                                                        background: black;
+                                                                                                                                                                                                        height: 100vh;
+                                                                                                                                                                                                    }
+                                                                                                                                                                                                    img {
+                                                                                                                                                                                                        width: 100%;
+                                                                                                                                                                                                        height: auto;
+                                                                                                                                                                                                        object-fit: contain;
+                                                                                                                                                                                                    }
+                                                                                                                                                                                                </style>
+                                                                                                                                                                                            </head>
+                                                                                                                                                                                            <body>
+                                                                                                                                                                                                <img src='${image}' alt='Template Print' />
+                                                                                                                                                                                                <script>
+                                                                                                                                                                                                    window.onload = function() {
+                                                                                                                                                                                                        window.print();
+                                                                                                                                                                                                        setTimeout(() => window.close(), 1000);
+                                                                                                                                                                                                    };
+                                                                                                                                                                                                </script>
+                                                                                                                                                                                            </body>
+                                                                                                                                                                                            </html>
+                                                                                                                                                                                        `;
         
                     printWindow.document.open();
                     printWindow.document.write(html);
