@@ -38,7 +38,7 @@
             <!-- Preview Per User -->
             <div class="bg-gray-900/40 border border-gray-700/50 rounded-2xl p-5 mb-8">
                 <h2 class="text-white text-lg font-semibold mb-4">
-                    Preview Pilihan Setiap User
+                    Preview Pilihan Setiap Orang
                 </h2>
                 <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
                     <template x-for="(u, index) in users" :key="index">
@@ -54,7 +54,7 @@
                                 <i class="fa-solid fa-user text-blue-400 text-xl"></i>
                             </div>
 
-                            <p class="text-white font-medium mb-1" x-text="`User ${index + 1}`"></p>
+                            <p class="text-white font-medium mb-1" x-text="`Orang ${index + 1}`"></p>
 
                             <template x-if="u.template">
                                 <div>
