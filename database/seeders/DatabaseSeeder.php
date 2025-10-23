@@ -22,11 +22,11 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        
+
         PhotoboothTemplate::create([
             "name" => "Template 1",
             "file_path" => "templates/slot-2.png",
-            "slots" => 2,
+            "slots" => 1,
         ]);
         PhotoboothTemplate::create([
             "name" => "Template 2",
