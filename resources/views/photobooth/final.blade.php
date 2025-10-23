@@ -354,7 +354,7 @@
 
                             <!-- Template Container -->
                             <div :id="`template-container-${templateIndex}`"
-                                class="relative w-full h-[800px] rounded-xl overflow-hidden border-2 border-gray-700/50 bg-black">
+                                class="relative w-full h-[800px] overflow-hidden border-2 border-gray-700/50 bg-black">
                                 <img :src="template.file_path"
                                     class="absolute inset-0 w-full h-full object-cover opacity-60"
                                     alt="Template Background" />
@@ -364,7 +364,7 @@
                                     :class="getGridClass(template)">
                                     <template x-for="(slot, slotIndex) in templateSlots[templateIndex]" :key="slotIndex">
                                         <!-- 🆕 Slot dengan Dynamic Aspect Ratio -->
-                                        <div class="zoom-container group relative w-full rounded-xl border-2 border-dashed flex items-center justify-center cursor-grab overflow-hidden bg-gray-900/30 transition"
+                                        <div class="zoom-container group relative w-full border-2 border-dashed flex items-center justify-center cursor-grab overflow-hidden bg-gray-900/30 transition"
                                             :class="[
                                                 slot ? 'border-blue-500' : 'border-gray-400/50',
                                                 getSlotAspectClass(template)
