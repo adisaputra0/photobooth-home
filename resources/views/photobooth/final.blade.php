@@ -69,6 +69,15 @@
     <div x-data="{
         showTutorialBar: true,
         previewPhoto: null,
+        showAlert: false,
+        audio: null,
+        closeAlertModal() {
+            this.showAlert = false;
+            if (this.audio) {
+                this.audio.pause();
+                this.audio.currentTime = 0;
+            }
+        },
     }" class="bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen p-8 pb-32">
         <div x-data="{
             uploadedPhotos: {{ Js::from($photos) }},
@@ -89,9 +98,9 @@
                     this.templateSlots[index] = Array(template.slots).fill(null);
                     this.imageTransforms[index] = {};
                 });
-
                 const savedMinutes = localStorage.getItem('sessionDuration');
                 const durationInSeconds = savedMinutes ? parseInt(savedMinutes) * 60 : 60;
+                //const durationInSeconds = 3;
                 this.remainingTime = durationInSeconds;
                 this.startCountdown();
 
@@ -102,12 +111,20 @@
 
             startCountdown() {
                 this.timerInterval = setInterval(() => {
-                    if (this.remainingTime > 0) this.remainingTime--;
-                    else {
+                    if (this.remainingTime > 0) {
+                        this.remainingTime--;
+                    } else {
                         clearInterval(this.timerInterval);
-                        alert('Waktu Habis');
+                        this.showAlertModal();
                     }
                 }, 1000);
+            },
+
+            showAlertModal() {
+                this.showAlert = true;
+                this.audio = new Audio(`{{ asset('assets/ringtone.mp3') }}`);
+                this.audio.loop = true;
+                this.audio.play().catch(err => console.error('Gagal memutar audio:', err));
             },
 
             formatTime(seconds) {
@@ -275,6 +292,15 @@
             },
 
             printTemplate(index) {
+            
+                // 🔹 Sembunyikan scrollbar sementara
+                const scrollEls = document.querySelectorAll('.custom-scrollbar');
+                const originalScrollbarStyles = [];
+                scrollEls.forEach(el => {
+                    originalScrollbarStyles.push(el.style.scrollbarWidth);
+                    el.style.scrollbarWidth = 'none';
+                });
+
                 const element = document.getElementById(`template-container-${index}`);
                 if (!element) return alert('Template tidak ditemukan');
 
@@ -289,10 +315,22 @@
                     printWindow.document.open();
                     printWindow.document.write(html);
                     printWindow.document.close();
+                }).finally(() => {
+                    // 🔹 Pulihkan style scrollbar setelah selesai
+                    scrollEls.forEach((el, i) => {
+                        el.style.scrollbarWidth = originalScrollbarStyles[i] || '';
+                    });
                 });
             },
 
             downloadTemplate(index) {
+                // 🔹 Sembunyikan scrollbar sementara
+                const scrollEls = document.querySelectorAll('.custom-scrollbar');
+                const originalScrollbarStyles = [];
+                scrollEls.forEach(el => {
+                    originalScrollbarStyles.push(el.style.scrollbarWidth);
+                    el.style.scrollbarWidth = 'none';
+                });
                 const element = document.getElementById(`template-container-${index}`);
                 if (!element) return alert('Template tidak ditemukan');
 
@@ -310,6 +348,11 @@
                 }).catch(err => {
                     console.error('Gagal mengunduh template:', err);
                     alert('Terjadi kesalahan saat mengunduh template.');
+                }).finally(() => {
+                    // 🔹 Pulihkan style scrollbar setelah selesai
+                    scrollEls.forEach((el, i) => {
+                        el.style.scrollbarWidth = originalScrollbarStyles[i] || '';
+                    });
                 });
             },
         }"
@@ -463,6 +506,24 @@
                 </button>
             </div>
         </div>
+        <!-- Modal Alert -->
+        <div 
+            x-show="showAlert" 
+            x-transition.opacity 
+            class="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+        >
+            <div class="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full text-center relative">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-3">⏰ Waktu Habis!</h2>
+                <p class="text-gray-600 mb-6">Waktu pengambilan foto telah berakhir.</p>
+                <button 
+                    @click="closeAlertModal()" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium transition"
+                >
+                    Oke
+                </button>
+            </div>
+        </div>
+
     </div>
             <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
