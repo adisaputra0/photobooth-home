@@ -82,11 +82,16 @@
         previewPhoto: null,
         showAlert: false,
         audio: null,
+        remainingTime: 0,
         closeAlertModal() {
-            this.showAlert = false;
-            if (this.audio) {
-                this.audio.pause();
-                this.audio.currentTime = 0;
+            if(document.getElementById('password').value == 'admin123'){
+                this.showAlert = false;
+                if (this.audio) {
+                    this.audio.pause();
+                    this.audio.currentTime = 0;
+                }
+            }else{
+                alert('Password salah. Silakan coba lagi.');
             }
         },
     }" class="bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen p-8 pb-32">
@@ -96,7 +101,7 @@
             selectedTemplates: [],
             templateSlots: {},
             imageTransforms: {},
-            remainingTime: 0,
+            {{-- remainingTime: 0, --}}
             timerInterval: null,
             activeTemplate: 0,
 
@@ -111,7 +116,7 @@
                 });
                 const savedMinutes = localStorage.getItem('sessionDuration');
                 const durationInSeconds = savedMinutes ? parseInt(savedMinutes) * 60 : 60;
-                //const durationInSeconds = 3;
+                {{-- const durationInSeconds = 3; --}}
                 this.remainingTime = durationInSeconds;
                 this.startCountdown();
 
@@ -526,7 +531,8 @@
         >
             <div class="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full text-center relative">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-3">⏰ Waktu Habis!</h2>
-                <p class="text-gray-600 mb-6">Waktu pengambilan foto telah berakhir.</p>
+                <p class="text-gray-600 mb-6">Waktu pengambilan foto telah berakhir. Masukkan password untuk klik oke</p>
+                <input type="password" class="w-full mb-6" id="password">
                 <button
                     @click="closeAlertModal()"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium transition"
