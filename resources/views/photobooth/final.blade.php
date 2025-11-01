@@ -41,6 +41,17 @@
         width: 8px;
     }
 
+    .grid-cols-2.relative::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background-color: rgba(107, 114, 128, 0.4); /* gray-600/40 */
+    transform: translateX(-50%);
+}
+
     .custom-scrollbar::-webkit-scrollbar-track {
         background: rgba(55, 65, 81, 0.3); /* abu gelap transparan */
         border-radius: 10px;
@@ -160,10 +171,11 @@
                     return 'grid-cols-1 p-6 pb-24';
                 } else if (slots === 4) {
                     // 4 slots: Grid 2x2 dengan gap sedang dan padding bawah
-                    return 'grid-cols-2 gap-x-3 gap-2 p-10 pt-10 pb-24';
+                    return 'grid-cols-2 gap-x-4 p-4 pb-[7rem]';
                 } else if (slots === 6) {
                     // 6 slots: Grid 3x2 dengan gap kecil dan padding lebih banyak
-                    return 'grid-cols-2 gap-y-0 gap-x-10 p-[3rem_2rem]';
+                    {{-- return 'grid-cols-2 gap-y-0 gap-x-10 p-[3rem_2rem]'; --}}
+                    return 'grid-cols-2 gap-x-3 gap-y-0 p-2 relative before:absolute before:top-0 before:bottom-0 before:left-1/2 before:w-[2px] before:bg-gray-600/40 before:-translate-x-1/2';
                 }
 
                 // Default fallback
@@ -176,10 +188,10 @@
 
                 if (slots === 1) {
                     // Single slot: Aspect ratio lebih tinggi (portrait penuh)
-                    return 'aspect-[3/4]';
+                    return 'aspect-[3/4.1]';
                 } else if (slots === 4) {
                     // 4 slots: Aspect ratio square-ish untuk balanced layout
-                    return 'aspect-[2/3]';
+                    return 'aspect-[2/2.7]';
                 } else if (slots === 6) {
                     // 6 slots: Aspect ratio lebih compact
                     return 'aspect-[1/1]';
@@ -292,7 +304,7 @@
             },
 
             printTemplate(index) {
-            
+
                 // 🔹 Sembunyikan scrollbar sementara
                 const scrollEls = document.querySelectorAll('.custom-scrollbar');
                 const originalScrollbarStyles = [];
@@ -507,16 +519,16 @@
             </div>
         </div>
         <!-- Modal Alert -->
-        <div 
-            x-show="showAlert" 
-            x-transition.opacity 
+        <div
+            x-show="showAlert"
+            x-transition.opacity
             class="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
         >
             <div class="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full text-center relative">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-3">⏰ Waktu Habis!</h2>
                 <p class="text-gray-600 mb-6">Waktu pengambilan foto telah berakhir.</p>
-                <button 
-                    @click="closeAlertModal()" 
+                <button
+                    @click="closeAlertModal()"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium transition"
                 >
                     Oke
