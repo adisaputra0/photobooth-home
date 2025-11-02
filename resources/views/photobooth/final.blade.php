@@ -72,6 +72,7 @@
         showTutorialBar: true,
         previewPhoto: null,
         showAlert: false,
+        showOfferModal: false,
         audio: null,
         remainingTime: 0,
         closeAlertModal() {
@@ -198,7 +199,7 @@
 
 
             handleFinish() {
-                alert('Terima kasih! Hasil akhir Anda sedang diproses.');
+                 this.showOfferModal = true;
             },
 
             initPanzoom() {
@@ -504,6 +505,52 @@
             </button>
         </div>
 
+        <!-- Modal Penawaran Produk -->
+<div
+    x-show="showOfferModal"
+    x-transition.opacity
+    class="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+>
+    <div class="bg-white rounded-2xl shadow-xl p-6 max-w-md w-[90%] text-center relative">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">🎁 Pilih Produk Tambahan</h2>
+        <p class="text-gray-600 mb-6">Ingin hasil fotomu dicetak dalam bentuk lain? Berikut beberapa pilihan menarik untukmu!</p>
+
+        <div class="space-y-3 text-gray-700 text-left mb-6">
+            <div class="flex items-center gap-3 bg-gray-100 p-3 rounded-xl border border-gray-200">
+                <div class="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full text-blue-600 font-bold">🪪</div>
+                <div>
+                    <p class="font-semibold">ID Card</p>
+                    <p class="text-sm text-gray-500">Cocok untuk kenang-kenangan berukuran kecil dan mudah dibawa.</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 bg-gray-100 p-3 rounded-xl border border-gray-200">
+                <div class="w-10 h-10 flex items-center justify-center bg-green-100 rounded-full text-green-600 font-bold">🔑</div>
+                <div>
+                    <p class="font-semibold">Gantungan Kunci</p>
+                    <p class="text-sm text-gray-500">Bawa kenanganmu kemanapun dengan desain mini yang lucu.</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 bg-gray-100 p-3 rounded-xl border border-gray-200">
+                <div class="w-10 h-10 flex items-center justify-center bg-pink-100 rounded-full text-pink-600 font-bold">🖼️</div>
+                <div>
+                    <p class="font-semibold">Bingkai Foto</p>
+                    <p class="text-sm text-gray-500">Tampilkan hasil fotomu dengan bingkai cantik siap pajang.</p>
+                </div>
+            </div>
+        </div>
+
+        <button
+            @click="showOfferModal = false"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition"
+        >
+            Tutup
+        </button>
+    </div>
+</div>
+
+
         <!-- Modal Preview -->
         <div x-show="previewPhoto" x-transition.opacity @click.self="previewPhoto = null"
             class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
@@ -535,7 +582,7 @@
         </div>
 
     </div>
-            <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+        <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 @endsection

@@ -2,6 +2,7 @@
 
 @section('content')
     <div x-data="{
+        serviceType: 'photobox',
         numPeople: 2,
         numBando: 0,
         timeAddition: '-',
@@ -13,6 +14,9 @@
         hargaBando: {{ $hargaBando }},
         hargaTambahanWaktu: {{ $hargaTambahanWaktu }},
         get totalPrice() {
+            if (this.serviceType === 'studio') {
+                return 90000;
+            }
             let total = this.numPeople * this.pricePerPerson;
     
             // Tambahan waktu
@@ -34,9 +38,6 @@
             this.bonusModalOpen = false;
             localStorage.setItem('bonusAccepted', this.bonusAccepted);
         },
-        {{-- handleContinue() {
-            window.location.href = `{{ route('photobooth.template') }}`;
-        }, --}}
         updateNumPeople() {
             localStorage.setItem('numPeople', this.numPeople);
         }
@@ -96,6 +97,20 @@
                     <div class="grid md:grid-cols-2 gap-6 mb-6">
                         <!-- Left -->
                         <div class="space-y-6">
+
+                            <!-- Jenis Layanan -->
+                            <div class="space-y-1">
+                                <label class="text-gray-300">Pilih Jenis Layanan</label>
+                                <p class="text-sm text-gray-400">
+                                    Tentukan apakah Anda ingin menggunakan layanan photo studio atau photobox
+                                </p>
+                                <select x-model="serviceType" @change="updateNumPeople()"
+                                    class="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gray-500 transition-all duration-300 appearance-none cursor-pointer">
+                                    <option value="studio">Photo Studio</option>
+                                    <option value="photobox">Photobox</option>
+                                </select>
+                            </div>
+
                             <!-- Jumlah Orang -->
                             <div>
                                 <label class="text-gray-300 mb-3">Masukkan Jumlah Orang</label>
@@ -128,37 +143,6 @@
                                     <option value="10">+10 Menit</option>
                                 </select>
                             </div>
-
-                            <!-- Upload File -->
-                            {{-- <div class="space-y-3">
-                                <label class="text-gray-300">Pilih folder foto Anda</label>
-                                <p class="text-sm text-gray-400">Pastikan foto yang diupload sesuai dengan hasil sesi Anda
-                                </p>
-
-                                <label for="fileUpload"
-                                    class="flex items-center justify-center gap-3 cursor-pointer bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-gray-300 hover:bg-gray-700/70 transition-all duration-300">
-                                    <i class="fa-solid fa-upload text-blue-400"></i>
-                                    <span>Pilih File</span>
-                                </label>
-
-                                <input type="file" id="fileUpload" accept="image/*" name="photos[]" class="hidden"
-                                    multiple required x-ref="fileInput" @change="handleFileUpload($event)" />
-
-                                <!-- Info File Uploaded -->
-                                <template x-if="files.length > 0">
-                                    <div
-                                        class="bg-green-600/10 border border-green-500/30 rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm">
-                                        <div class="text-green-400">
-                                            <i class="fa-solid fa-check mr-1"></i>
-                                            <span x-text="files.length + ' foto berhasil diupload'"></span>
-                                        </div>
-                                        <button @click="cancelUpload" type="button"
-                                            class="text-red-400 hover:text-red-300 transition-colors text-sm flex items-center gap-1">
-                                            <i class="fa-solid fa-xmark"></i> Batal
-                                        </button>
-                                    </div>
-                                </template>
-                            </div> --}}
                         </div>
 
                         <!-- Right -->
@@ -186,19 +170,12 @@
                                         </svg>
                                     </div>
                                     <span
-                                        x-text="`${15 + (timeAddition !== '-' ? parseInt(timeAddition) : 0)} Menit Durasi Foto`"></span>
+                                        x-text="`${serviceType === 'photobox'
+    ? 15 + (isNaN(parseInt(timeAddition)) ? 0 : parseInt(timeAddition))
+    : 30 + (isNaN(parseInt(timeAddition)) ? 0 : parseInt(timeAddition))} Menit Durasi Foto`">
+                                    </span>
                                 </div>
 
-                                <div class="flex items-start space-x-3">
-                                    <div
-                                        class="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500/80 flex-shrink-0 mt-0.5">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="3" stroke="white" class="w-3.5 h-3.5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </div>
-                                    <span>15 Menit Seleksi Foto</span>
-                                </div>
 
                                 <div class="flex items-start space-x-3">
                                     <div
@@ -248,6 +225,9 @@
                                         <span x-text="totalPrice.toLocaleString('id-ID')"></span>
                                     </span>
                                 </div>
+
+
+
                                 <div class="flex items-start space-x-3">
                                     <!-- Lingkaran dinamis -->
                                     <div class="w-5 h-5 flex items-center justify-center rounded-full flex-shrink-0 mt-0.5 transition-all duration-300"
@@ -330,11 +310,6 @@
                     </div>
 
                     <div class="flex justify-end mt-6">
-                        {{-- <button type="submit" @click="validateBeforeSubmit($event)"
-                            class="cursor-pointer bg-blue-600 border border-blue-700/50 rounded-xl px-6 py-3 text-white hover:bg-blue-700 transition-all duration-300 shadow-lg">
-                            Lanjut ke Pemilihan Template →
-                        </button> --}}
-
                         <button type="submit"
                             class="cursor-pointer bg-blue-600 border border-blue-700/50 rounded-xl px-6 py-3 text-white hover:bg-blue-700 transition-all duration-300 shadow-lg">
                             Lanjut ke Pemilihan Template →
