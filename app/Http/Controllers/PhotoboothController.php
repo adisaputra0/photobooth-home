@@ -53,12 +53,13 @@ class PhotoboothController extends Controller
             }
             // Hapus data dari database
             $photo->delete();
-        }  
+        }
         return redirect()->route('photobooth');
     }
-    public function final() {
+    public function final()
+    {
         // $photos = PhotoboothPhoto::all();
-        $templates = PhotoboothTemplate::all()->keyBy('id')->map(function($template) {
+        $templates = PhotoboothTemplate::all()->keyBy('id')->map(function ($template) {
             return [
                 'id' => $template->id,
                 'name' => $template->name,
@@ -68,5 +69,10 @@ class PhotoboothController extends Controller
         });
         // return view('photobooth.final', ['photos' => $photos, 'templates' => $templates]);
         return view('photobooth.final', ['templates' => $templates]);
+    }
+
+    public function gantunganKunci()
+    {
+        return view('photobooth.gantungan_kunci');
     }
 }
