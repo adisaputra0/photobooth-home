@@ -10,23 +10,52 @@
         bonusModalOpen: false,
         confirmModalOpen: false,
         bonusAccepted: false,
+        tirai: false,
+        spotlight: false,
         pricePerPerson: {{ $hargaPhotobox }},
         hargaBando: {{ $hargaBando }},
         hargaTambahanWaktu: {{ $hargaTambahanWaktu }},
         get totalPrice() {
             if (this.serviceType === 'studio') {
-                return 90000;
+                let total = 0;
+        
+                // Tambahan waktu
+                if (this.timeAddition === '10') total += {{ $hargaTambahanWaktuStudio }};
+                else if (this.timeAddition === '20') total += {{ $hargaTambahanWaktuStudio }} * 2;
+        
+                //Tambahan orang
+                if(this.numPeople > 7) {
+                    total += this.numPeople * {{ $hargaStudio }};
+                }
+                else if(this.numPeople > 2) {
+                    total += (this.numPeople - 2) * {{ $hargaStudio }};
+                    total += {{ $hargaPacketStudio }};
+                }else {
+                    total += {{ $hargaPacketStudio }};
+                }
+
+                // Tambahan Tirai
+                if(this.tirai) {
+                    total += {{ $hargaTirai }};
+                }
+                // Tambahan Spotlight
+                if(this.spotlight) {
+                    total += {{ $hargaSpotlight }};
+                }
+
+                return total;
+            }else{
+                let total = this.numPeople * this.pricePerPerson;
+        
+                // Tambahan waktu
+                if (this.timeAddition === '5') total += this.hargaTambahanWaktu;
+                else if (this.timeAddition === '10') total += this.hargaTambahanWaktu * 2;
+        
+                // Tambahan bando
+                total += this.numBando * this.hargaBando;
+        
+                return total;
             }
-            let total = this.numPeople * this.pricePerPerson;
-    
-            // Tambahan waktu
-            if (this.timeAddition === '5') total += this.hargaTambahanWaktu;
-            else if (this.timeAddition === '10') total += this.hargaTambahanWaktu * 2;
-    
-            // Tambahan bando
-            total += this.numBando * this.hargaBando;
-    
-            return total;
         },
         handleBonusAccept() {
             this.bonusAccepted = true;
@@ -132,7 +161,7 @@
                             <!-- Tirai -->
                             <div class="space-y-3" x-show="serviceType === 'studio'">
                                 <div class="flex items-center mb-3 text-white">
-                                    <input type="checkbox" id="tambahan_tirai" class="mr-2"> 
+                                    <input type="checkbox" id="tambahan_tirai" class="mr-2" x-model="tirai"> 
                                 <label class="text-gray-300">Tirai (Rp.
                                     {{ number_format($hargaBando, 0, ',', '.') }} / pcs)</label>
                                 </div>
@@ -140,14 +169,14 @@
                             <!-- Spotlight -->
                             <div class="space-y-3" x-show="serviceType === 'studio'">
                                 <div class="flex items-center mb-3 text-white">
-                                    <input type="checkbox" id="tambahan_spotlight" class="mr-2"> 
+                                    <input type="checkbox" id="tambahan_spotlight" class="mr-2" x-model="spotlight"> 
                                 <label class="text-gray-300">Spotlight (Rp.
                                     {{ number_format($hargaBando, 0, ',', '.') }} / pcs)</label>
                                 </div>
                             </div>
                             
                             <!-- Penambahan Waktu -->
-                            <div class="space-y-3">
+                            <div class="space-y-3" x-show="serviceType === 'photobox'">
                                 <label class="text-gray-300">Penambahan Waktu</label>
                                 <p class="text-sm text-gray-400">
                                     Jika merasa waktunya kurang, Anda dapat menambah waktunya
@@ -157,6 +186,18 @@
                                     <option value="-">-</option>
                                     <option value="5">+5 Menit</option>
                                     <option value="10">+10 Menit</option>
+                                </select>
+                            </div>
+                            <div class="space-y-3" x-show="serviceType === 'studio'">
+                                <label class="text-gray-300">Penambahan Waktu</label>
+                                <p class="text-sm text-gray-400">
+                                    Jika merasa waktunya kurang, Anda dapat menambah waktunya
+                                </p>
+                                <select x-model="timeAddition"
+                                    class="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gray-500 transition-all duration-300 appearance-none cursor-pointer">
+                                    <option value="-">-</option>
+                                    <option value="10">+10 Menit</option>
+                                    <option value="20">+20 Menit</option>
                                 </select>
                             </div>
                         </div>
@@ -201,7 +242,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </div>
-                                    <span>2 Print Ukuran 4R</span>
+                                    <span><span x-text="numPeople"></span> Print Ukuran 4R</span>
                                 </div>
 
                                 <div class="flex items-start space-x-3">
@@ -237,8 +278,8 @@
                                         </svg>
                                     </div>
                                     <span>
-                                        <span x-text="numPeople"></span> orang : Rp.
-                                        <span x-text="totalPrice.toLocaleString('id-ID')"></span>
+                                        <span x-text="numPeople"></span> Orang  
+                                        {{-- : Rp. <span x-text="totalPrice.toLocaleString('id-ID')"></span> --}}
                                     </span>
                                 </div>
 

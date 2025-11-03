@@ -18,10 +18,20 @@ class PhotoboothController extends Controller
         $hargaPhotobox = 30000;
         $hargaBando = 5000;
         $hargaTambahanWaktu = 15000;
+        $hargaTambahanWaktuStudio = 35000;
+        $hargaPacketStudio = 90000;
+        $hargaStudio = 35000;
+        $hargaTirai = 40000;
+        $hargaSpotlight = 40000;
         return view("photobooth.index", [
             "hargaPhotobox" => $hargaPhotobox,
             "hargaBando" => $hargaBando,
+            "hargaPacketStudio" => $hargaPacketStudio,
+            "hargaStudio" => $hargaStudio,
+            "hargaTirai" => $hargaTirai,
+            "hargaSpotlight" => $hargaSpotlight,
             "hargaTambahanWaktu" => $hargaTambahanWaktu,
+            "hargaTambahanWaktuStudio" => $hargaTambahanWaktuStudio,
         ]);
     }
     public function store(Request $request)
