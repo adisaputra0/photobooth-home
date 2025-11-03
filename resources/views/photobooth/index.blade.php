@@ -120,7 +120,7 @@
                             </div>
 
                             <!-- Jumlah Bando -->
-                            <div class="space-y-3">
+                            <div class="space-y-3" x-show="serviceType === 'photobox'">
                                 <label class="text-gray-300">Jumlah Bando</label>
                                 <p class="text-sm text-gray-400">
                                     Tambahkan berapa banyak bando yang digunakan (Rp.
@@ -129,7 +129,23 @@
                                 <input type="number" x-model.number="numBando" min="0"
                                     class="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-gray-500 transition-all duration-300" />
                             </div>
-
+                            <!-- Tirai -->
+                            <div class="space-y-3" x-show="serviceType === 'studio'">
+                                <div class="flex items-center mb-3 text-white">
+                                    <input type="checkbox" id="tambahan_tirai" class="mr-2"> 
+                                <label class="text-gray-300">Tirai (Rp.
+                                    {{ number_format($hargaBando, 0, ',', '.') }} / pcs)</label>
+                                </div>
+                            </div>
+                            <!-- Spotlight -->
+                            <div class="space-y-3" x-show="serviceType === 'studio'">
+                                <div class="flex items-center mb-3 text-white">
+                                    <input type="checkbox" id="tambahan_spotlight" class="mr-2"> 
+                                <label class="text-gray-300">Spotlight (Rp.
+                                    {{ number_format($hargaBando, 0, ',', '.') }} / pcs)</label>
+                                </div>
+                            </div>
+                            
                             <!-- Penambahan Waktu -->
                             <div class="space-y-3">
                                 <label class="text-gray-300">Penambahan Waktu</label>
