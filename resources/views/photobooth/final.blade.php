@@ -360,7 +360,7 @@
             },
             body: JSON.stringify({
                 image: imageData,
-                filename: `template-${index + 1}.jpg`
+                filename: `orang-${index + 1}.jpg`
             })
         })
         .then(response => response.json())
