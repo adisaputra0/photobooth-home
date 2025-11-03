@@ -333,37 +333,56 @@
             },
 
             downloadTemplate(index) {
-                // 🔹 Sembunyikan scrollbar sementara
-                const scrollEls = document.querySelectorAll('.custom-scrollbar');
-                const originalScrollbarStyles = [];
-                scrollEls.forEach(el => {
-                    originalScrollbarStyles.push(el.style.scrollbarWidth);
-                    el.style.scrollbarWidth = 'none';
-                });
-                const element = document.getElementById(`template-container-${index}`);
-                if (!element) return alert('Template tidak ditemukan');
+    const scrollEls = document.querySelectorAll('.custom-scrollbar');
+    const originalScrollbarStyles = [];
+    scrollEls.forEach(el => {
+        originalScrollbarStyles.push(el.style.scrollbarWidth);
+        el.style.scrollbarWidth = 'none';
+    });
 
-                html2canvas(element, {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: '#000',
-                }).then(canvas => {
-                    const image = canvas.toDataURL('image/jpeg', 1.0);
+    const element = document.getElementById(`template-container-${index}`);
+    if (!element) return alert('Template tidak ditemukan');
 
-                    const link = document.createElement('a');
-                    link.href = image;
-                    link.download = `template-${index + 1}.jpg`;
-                    link.click();
-                }).catch(err => {
-                    console.error('Gagal mengunduh template:', err);
-                    alert('Terjadi kesalahan saat mengunduh template.');
-                }).finally(() => {
-                    // 🔹 Pulihkan style scrollbar setelah selesai
-                    scrollEls.forEach((el, i) => {
-                        el.style.scrollbarWidth = originalScrollbarStyles[i] || '';
-                    });
-                });
+    html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#000',
+    }).then(canvas => {
+        // 🔹 Ambil hasil gambar dalam Base64
+        const imageData = canvas.toDataURL('image/jpeg', 1.0);
+
+        // 🔹 Kirim ke server Laravel
+        fetch('/save-photo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector(`meta[name='csrf-token']`).content,
             },
+            body: JSON.stringify({
+                image: imageData,
+                filename: `template-${index + 1}.jpg`
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Foto berhasil disimpan di server!');
+            } else {
+                alert('Gagal menyimpan foto di server.');
+            }
+        })
+        .catch(err => {
+            console.error('Gagal mengirim ke server:', err);
+            alert('Terjadi kesalahan saat mengirim gambar ke server.');
+        });
+    })
+    .finally(() => {
+        scrollEls.forEach((el, i) => {
+            el.style.scrollbarWidth = originalScrollbarStyles[i] || '';
+        });
+    });
+}
+
         }"
             class="relative max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 sm:p-8 shadow-2xl">
 

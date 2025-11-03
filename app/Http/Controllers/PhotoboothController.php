@@ -70,6 +70,33 @@ class PhotoboothController extends Controller
         // return view('photobooth.final', ['photos' => $photos, 'templates' => $templates]);
         return view('photobooth.final', ['templates' => $templates]);
     }
+    public function savePhoto(Request $request)
+    {
+        try {
+            $image = $request->input('image');
+            $filename = $request->input('filename', 'photo.jpg');
+
+            // 🔹 Hapus prefix base64
+            $image = str_replace('data:image/jpeg;base64,', '', $image);
+            $image = str_replace(' ', '+', $image);
+            $imageData = base64_decode($image);
+
+            // 🔹 Path tujuan penyimpanan
+            $path = public_path('uploads/photobooth/' . $filename);
+
+            // 🔹 Pastikan folder ada
+            if (!file_exists(dirname($path))) {
+                mkdir(dirname($path), 0777, true);
+            }
+
+            // 🔹 Simpan file ke folder public/uploads/photobooth
+            file_put_contents($path, $imageData);
+
+            return response()->json(['success' => true, 'path' => $path]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
 
     public function gantunganKunci()
     {
