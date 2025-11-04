@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\User;
+use App\Models\IDCardTemplate;
 use Illuminate\Database\Seeder;
 use App\Models\PhotoboothTemplate;
 use Illuminate\Support\Facades\Hash;
@@ -37,6 +38,19 @@ class DatabaseSeeder extends Seeder
             "name" => "Template 3",
             "file_path" => "templates/slot-6.png",
             "slots" => 6,
+        ]);
+        
+        IDCardTemplate::create([
+            "name" => "Template 1",
+            "file_path" => "uploads/idcard_templates/1.jpg",
+        ]);
+        IDCardTemplate::create([
+            "name" => "Template 2",
+            "file_path" => "uploads/idcard_templates/1.jpg",
+        ]);
+        IDCardTemplate::create([
+            "name" => "Template 3",
+            "file_path" => "uploads/idcard_templates/1.jpg",
         ]);
     }
 }

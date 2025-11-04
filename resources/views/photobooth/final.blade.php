@@ -535,13 +535,13 @@
         <p class="text-gray-600 mb-6">Ingin hasil fotomu dicetak dalam bentuk lain? Berikut beberapa pilihan menarik untukmu!</p>
 
         <div class="space-y-3 text-gray-700 text-left mb-6">
-            <div class="flex items-center gap-3 bg-gray-100 p-3 rounded-xl border border-gray-200">
+            <a href="{{ route('photobooth.idcard.template') }}" class="flex items-center gap-3 bg-gray-100 p-3 rounded-xl border border-gray-200">
                 <div class="w-10 h-10 flex items-center justify-center bg-blue-100 rounded-full text-blue-600 font-bold">🪪</div>
                 <div>
                     <p class="font-semibold">ID Card</p>
                     <p class="text-sm text-gray-500">Cocok untuk kenang-kenangan berukuran kecil dan mudah dibawa.</p>
                 </div>
-            </div>
+            </a>
 
             <div class="flex items-center gap-3 bg-gray-100 p-3 rounded-xl border border-gray-200">
                 <div class="w-10 h-10 flex items-center justify-center bg-green-100 rounded-full text-green-600 font-bold">🔑</div>

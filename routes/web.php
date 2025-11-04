@@ -27,7 +27,9 @@ Route::get("template", [PhotoboothTemplateController::class, "index"])->name("ph
 Route::get("final", [PhotoboothController::class, "final"])->name("photobooth.final");
 Route::post('/save-photo', [PhotoboothController::class, 'savePhoto'])->name('photobooth.savePhoto');
 Route::get("gantunganKunci", [PhotoboothController::class, "gantunganKunci"])->name("photobooth.gantunganKunci");
+Route::get("/idcard/template", [PhotoboothController::class, "idcard_template"])->name("photobooth.idcard.template");
 
+//Photobooth - Admin
 Route::get("admin/template", [PhotoboothTemplateController::class, "index_admin"])->middleware("auth")->name("photobooth.template.admin");
 Route::get("admin/template/create", [PhotoboothTemplateController::class, "create"])->middleware("auth")->name("photobooth.template.create");
 Route::get("admin/template/edit/{id}", [PhotoboothTemplateController::class, "edit"])->middleware("auth")->name("photobooth.template.edit");

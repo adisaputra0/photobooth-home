@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\IDCardTemplate;
 use App\Models\PhotoboothPhoto;
 use App\Models\PhotoboothTemplate;
 
@@ -106,6 +107,12 @@ class PhotoboothController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
+    }
+
+    public function idcard_template()
+    {
+        $templates = IDCardTemplate::all();
+        return view('photobooth.idcard_template', ['templates' => $templates]);
     }
 
     public function gantunganKunci()

@@ -283,8 +283,6 @@
                                     </span>
                                 </div>
 
-
-
                                 <div class="flex items-start space-x-3">
                                     <!-- Lingkaran dinamis -->
                                     <div class="w-5 h-5 flex items-center justify-center rounded-full flex-shrink-0 mt-0.5 transition-all duration-300"
