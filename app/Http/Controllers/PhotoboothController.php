@@ -108,11 +108,12 @@ class PhotoboothController extends Controller
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
     }
-
-    public function idcard_template()
+    public function admin()
     {
-        $templates = IDCardTemplate::all();
-        return view('photobooth.idcard_template', ['templates' => $templates]);
+        return view('admin')->with([
+            "totalPhotoboothTemplates" => PhotoboothTemplate::count(),
+            "totalIDCardTemplates" => IDCardTemplate::count(),
+        ]);
     }
 
     public function gantunganKunci()

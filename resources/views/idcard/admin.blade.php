@@ -17,10 +17,10 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
                         {{-- <p class="text-sm text-gray-400 mb-1">Admin Panel</p> --}}
-                        <h1 class="text-white text-3xl font-semibold">Photobooth Templates</h1>
-                        {{-- <p class="text-gray-400 text-sm">Kelola koleksi template photobooth Anda</p> --}}
+                        <h1 class="text-white text-3xl font-semibold">ID Card Templates</h1>
+                        {{-- <p class="text-gray-400 text-sm">Kelola koleksi template idcard Anda</p> --}}
                     </div>
-                    <a href="{{ route('photobooth.template.create') }}"
+                    <a href="{{ route('idcard.template.create') }}"
                         class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 border border-blue-700/50 rounded-xl px-6 py-3 text-white transition-all duration-300 shadow-lg hover:shadow-blue-600/30">
                         <i class="fa-solid fa-plus"></i>
                         <span>Tambah Template</span>
@@ -76,7 +76,7 @@
 
                             <!-- Actions -->
                             <div class="flex gap-3">
-                                <a href="{{ route('photobooth.template.edit', $template->id) }}"
+                                <a href="{{ route('idcard.template.edit', $template->id) }}"
                                     class="flex-1 bg-yellow-600/20 hover:bg-yellow-600/30 border border-yellow-500/30 rounded-xl px-4 py-2.5 text-yellow-400 hover:text-yellow-300 transition-all duration-300 flex items-center justify-center gap-2">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     <span class="text-sm font-medium">Edit</span>
@@ -123,7 +123,7 @@
                                             class="flex-1 bg-gray-100 hover:bg-gray-200 rounded-xl py-3 text-gray-700 font-medium">
                                             Batal
                                         </button>
-                                        <form action="{{ route('photobooth.template.destroy', $template->id) }}"
+                                        <form action="{{ route('idcard.template.destroy', $template->id) }}"
                                             method="POST" class="flex-1">
                                             @csrf
                                             @method('DELETE')
@@ -143,8 +143,8 @@
                             <i class="fa-solid fa-inbox text-gray-400 text-3xl"></i>
                         </div>
                         <h3 class="text-white text-xl font-semibold mb-2">Belum Ada Template</h3>
-                        <p class="text-gray-400 mb-6">Mulai dengan menambahkan template photobooth pertama Anda</p>
-                        <a href="{{ route('photobooth.template.create') }}"
+                        <p class="text-gray-400 mb-6">Mulai dengan menambahkan template idcard pertama Anda</p>
+                        <a href="{{ route('idcard.template.create') }}"
                             class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 border border-blue-700/50 rounded-xl px-6 py-3 text-white transition-all duration-300 shadow-lg hover:shadow-blue-600/30">
                             <i class="fa-solid fa-plus"></i>
                             <span>Tambah Template Pertama</span>
