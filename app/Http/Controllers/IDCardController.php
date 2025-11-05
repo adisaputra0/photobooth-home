@@ -13,6 +13,19 @@ class IDCardController extends Controller
         $templates = IDCardTemplate::all();
         return view('idcard.template', ['templates' => $templates]);
     }
+    public function final()
+    {
+        // $photos = idcardPhoto::all();
+        $templates = IDCardTemplate::all()->keyBy('id')->map(function ($template) {
+            return [
+                'id' => $template->id,
+                'name' => $template->name,
+                'file_path' => asset($template->file_path), // Pastikan asset() digunakan
+            ];
+        });
+        // return view('idcard.final', ['photos' => $photos, 'templates' => $templates]);
+        return view('idcard.final', ['templates' => $templates]);
+    }
     public function index_admin()
     {
         $templates = IDCardTemplate::all();

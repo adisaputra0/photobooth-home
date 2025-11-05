@@ -42,9 +42,10 @@ Route::delete("admin/template/delete/{id}", [PhotoboothTemplateController::class
 
 //ID Card
 Route::get("/idcard/template", [IDCardController::class, "index"])->name("idcard.template");
+Route::get("/idcard/final", [IDCardController::class, "final"])->name("idcard.final");
 
 //ID Card - Admin
-Route::get("admin/idcard/template", [IDCardController::class, "index_admin"])->name("idcard.template.admin");
+Route::get("admin/idcard/final", [IDCardController::class, "index_admin"])->name("idcard.template.admin");
 Route::get("admin/idcard/template/create", [IDCardController::class, "create"])->name("idcard.template.create");
 Route::get("admin/idcard/template/edit/{id}", [IDCardController::class, "edit"])->name("idcard.template.edit");
 Route::post("admin/idcard/template", [IDCardController::class, "store"])->name("idcard.template.store");

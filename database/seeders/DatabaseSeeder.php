@@ -42,15 +42,15 @@ class DatabaseSeeder extends Seeder
         
         IDCardTemplate::create([
             "name" => "Template 1",
-            "file_path" => "uploads/idcard_templates/1.jpg",
+            "file_path" => "uploads/idcard_templates/1.png",
         ]);
         IDCardTemplate::create([
             "name" => "Template 2",
-            "file_path" => "uploads/idcard_templates/1.jpg",
+            "file_path" => "uploads/idcard_templates/1.png",
         ]);
         IDCardTemplate::create([
             "name" => "Template 3",
-            "file_path" => "uploads/idcard_templates/1.jpg",
+            "file_path" => "uploads/idcard_templates/1.png",
         ]);
     }
 }

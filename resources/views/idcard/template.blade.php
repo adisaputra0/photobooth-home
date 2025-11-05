@@ -155,7 +155,7 @@
                     const templateIds = this.users.map(user => user.template.id);
                     console.log("Template IDs:", templateIds);
                     localStorage.setItem("selectedTemplates", JSON.stringify(templateIds));
-                    window.location.href = "{{ route('photobooth.final') }}";
+                    window.location.href = "{{ route('idcard.final') }}";
                 },
             }));
         });
