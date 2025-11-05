@@ -70,9 +70,10 @@
         }
 
         /* ID Card size: 86x54mm = 3.39x2.13 inch = 323x203px at 96dpi */
+        /* Preview size: 1.5x larger for better visibility */
         .idcard-container {
-            width: 323px;
-            height: 203px;
+            width: 484px;
+            height: 304px;
         }
 
         /* 4R paper size: 10x15cm = 3.94x5.91 inch = 378x567px at 96dpi */
@@ -93,6 +94,23 @@
             .no-print {
                 display: none !important;
             }
+            
+            /* Reset to actual size for printing */
+            .idcard-container {
+                width: 323px !important;
+                height: 203px !important;
+            }
+        }
+
+        /* Label styling */
+        .input-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+            display: block;
         }
     </style>
 
@@ -249,15 +267,27 @@
             const cardElement = document.querySelector(`#idcard-${cardIndex}`);
             if (!cardElement) return alert('Card tidak ditemukan');
 
+            // Scale factor untuk menyesuaikan dari preview ke ukuran print sebenarnya
+            const scaleFactor = 323 / 484; // actual size / preview size
+
             html2canvas(cardElement, {
-                scale: 3,
+                scale: 3 * scaleFactor, // Adjust scale untuk ukuran yang tepat
                 useCORS: true,
-                backgroundColor: '#fff'
+                backgroundColor: '#fff',
+                width: 484,
+                height: 304
             }).then(canvas => {
-                const image = canvas.toDataURL('image/png');
+                // Resize canvas ke ukuran print sebenarnya
+                const printCanvas = document.createElement('canvas');
+                printCanvas.width = 323;
+                printCanvas.height = 203;
+                const ctx = printCanvas.getContext('2d');
+                ctx.drawImage(canvas, 0, 0, 323, 203);
+                
+                const image = printCanvas.toDataURL('image/png');
 
                 const printWindow = window.open('', '_blank');
-                const html = `<html><head><title>Print ID Card</title><style>@page{size:4in 6in;margin:0;}body{margin:0;display:flex;align-items:center;justify-content:center;background:white;height:100vh;}img{width:100%;height:auto;object-fit:contain;}</style></head><body><img src='${image}' alt='ID Card Print'/><script>window.onload=function(){window.print();setTimeout(()=>window.close(),1000);}<\/script></body></html>`;
+                const html = `<html><head><title>Print ID Card</title><style>@page{size:4in 6in;margin:0;}body{margin:0;display:flex;align-items:center;justify-content:center;background:white;height:100vh;}img{width:323px;height:203px;object-fit:contain;}</style></head><body><img src='${image}' alt='ID Card Print'/><script>window.onload=function(){window.print();setTimeout(()=>window.close(),1000);}<\/script></body></html>`;
                 printWindow.document.open();
                 printWindow.document.write(html);
                 printWindow.document.close();
@@ -347,9 +377,9 @@
                     </div>
                 </div>
 
-                <!-- Right: ID Cards Grid -->
+                <!-- Right: ID Cards Grid - CHANGED TO 1 COLUMN -->
                 <div class="lg:col-span-2">
-                    <div class="grid md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 gap-6">
                         <template x-for="(card, cardIndex) in idCards" :key="cardIndex">
                             <div class="bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 shadow-2xl">
                                 <!-- Card Header -->
@@ -367,24 +397,24 @@
                                     </div>
                                 </div>
 
-                                <!-- ID Card Container -->
+                                <!-- ID Card Container - NOW BIGGER -->
                                 <div :id="`idcard-${cardIndex}`" 
-                                    class="idcard-container mx-auto relative rounded-lg shadow-xl overflow-hidden" 
+                                    class="idcard-container mx-auto relative rounded-xl shadow-2xl overflow-hidden" 
                                     :style="card.template ? `background-image: url('${card.template.image}'); background-size: cover; background-position: center;` : 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);'">
                                     
                                     <!-- Overlay for better text visibility -->
                                     <div class="absolute inset-0 bg-black/20"></div>
                                     
-                                    <div class="relative z-10 h-full p-4 flex items-center gap-3">
+                                    <div class="relative z-10 h-full p-6 flex items-center gap-4">
                                         <!-- Foto Section -->
                                         <div class="flex-shrink-0">
-                                            <div class="zoom-container group relative w-24 h-32 border-2 border-dashed rounded-lg flex items-center justify-center cursor-grab overflow-hidden bg-white/10 backdrop-blur-sm transition"
+                                            <div class="zoom-container group relative w-36 h-52 border-2 border-dashed rounded-lg flex items-center justify-center cursor-grab overflow-hidden bg-white/10 backdrop-blur-sm transition"
                                                 :class="card.photo ? 'border-white' : 'border-white/40'"
                                                 :data-card-index="cardIndex">
 
                                                 <template x-if="!card.photo">
                                                     <div class="text-center p-2">
-                                                        <span class="text-white/60 text-[10px] leading-tight block">Klik foto di sebelah kiri</span>
+                                                        <span class="text-white/60 text-xs leading-tight block">Klik foto di sebelah kiri</span>
                                                     </div>
                                                 </template>
 
@@ -394,7 +424,7 @@
 
                                                         <button
                                                             @click.stop="idCards[cardIndex].photo = null; delete imageTransforms[cardIndex]; $nextTick(() => initPanzoom());"
-                                                            class="absolute top-1 right-1 bg-red-600/80 hover:bg-red-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md"
+                                                            class="absolute top-1 right-1 bg-red-600/80 hover:bg-red-700 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md"
                                                             title="Hapus Foto">✕
                                                         </button>
                                                     </div>
@@ -402,33 +432,37 @@
                                             </div>
                                         </div>
 
-                                        <!-- Data Section -->
-                                        <div class="flex-1 space-y-2">
+                                        <!-- Data Section with Labels -->
+                                        <div class="w-full">
                                             <div>
+                                                <label class="input-label">ID Number</label>
                                                 <input type="text" 
                                                     x-model="idCards[cardIndex].idNumber"
-                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 rounded px-2 py-1 text-white text-xs font-semibold placeholder-white/50 focus:border-white focus:outline-none transition"
-                                                    placeholder="ID Number">
+                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 p-0 text-sm text-white placeholder-white/50 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/20 transition"
+                                                    placeholder="Masukkan ID Number">
                                             </div>
 
                                             <div>
+                                                <label class="input-label">Nama Lengkap</label>
                                                 <input type="text" 
                                                     x-model="idCards[cardIndex].name"
-                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 rounded px-2 py-1 text-white text-sm font-bold placeholder-white/50 focus:border-white focus:outline-none transition"
-                                                    placeholder="Full Name">
+                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 p-0 text-sm text-white placeholder-white/50 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/20 transition"
+                                                    placeholder="Masukkan Nama Lengkap">
                                             </div>
 
                                             <div>
+                                                <label class="input-label">Tanggal Lahir</label>
                                                 <input type="date" 
                                                     x-model="idCards[cardIndex].dateOfBirth"
-                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 rounded px-2 py-1 text-white text-xs placeholder-white/50 focus:border-white focus:outline-none transition">
+                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 p-0 text-sm text-white placeholder-white/50 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/20 transition">
                                             </div>
 
                                             <div>
+                                                <label class="input-label">Kelas</label>
                                                 <input type="text" 
                                                     x-model="idCards[cardIndex].class"
-                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 rounded px-2 py-1 text-white text-xs placeholder-white/50 focus:border-white focus:outline-none transition"
-                                                    placeholder="Class">
+                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 p-0 text-sm text-white placeholder-white/50 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/20 transition"
+                                                    placeholder="Masukkan Kelas">
                                             </div>
                                         </div>
                                     </div>
@@ -436,9 +470,9 @@
 
                                 <!-- Template Info -->
                                 <template x-if="card.template">
-                                    <div class="mt-3 flex items-center justify-center gap-2 bg-purple-600/20 border border-purple-500/30 rounded-lg px-3 py-1.5">
-                                        <span class="text-purple-300 text-xs font-medium">Template:</span>
-                                        <span class="text-white text-xs font-semibold" x-text="card.template.name"></span>
+                                    <div class="mt-4 flex items-center justify-center gap-2 bg-purple-600/20 border border-purple-500/30 rounded-lg px-4 py-2">
+                                        <span class="text-purple-300 text-sm font-medium">Template:</span>
+                                        <span class="text-white text-sm font-semibold" x-text="card.template.name"></span>
                                     </div>
                                 </template>
                             </div>
