@@ -109,7 +109,6 @@
             color: rgba(255, 255, 255, 0.9);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 0.25rem;
             display: block;
         }
     </style>
@@ -434,25 +433,23 @@
 
                                         <!-- Data Section with Labels -->
                                         <div class="w-full">
-                                            <div>
+                                            <div class="mb-2">
                                                 <label class="input-label">ID Number</label>
                                                 <input type="text" 
                                                     x-model="idCards[cardIndex].idNumber"
-                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 p-0 text-sm text-white placeholder-white/50 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/20 transition"
-                                                    placeholder="Masukkan ID Number">
+                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 p-0 text-sm text-white placeholder-white/50 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/20 transition">
                                             </div>
 
-                                            <div>
+                                            <div class="mb-2">
                                                 <label class="input-label">Nama Lengkap</label>
                                                 <input type="text" 
                                                     x-model="idCards[cardIndex].name"
-                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 p-0 text-sm text-white placeholder-white/50 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/20 transition"
-                                                    placeholder="Masukkan Nama Lengkap">
+                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 p-0 text-sm text-white placeholder-white/50 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/20 transition">
                                             </div>
 
-                                            <div>
+                                            <div class="mb-2">
                                                 <label class="input-label">Tanggal Lahir</label>
-                                                <input type="date" 
+                                                <input type="text" 
                                                     x-model="idCards[cardIndex].dateOfBirth"
                                                     class="w-full bg-white/10 backdrop-blur-sm border border-white/30 p-0 text-sm text-white placeholder-white/50 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/20 transition">
                                             </div>
@@ -461,8 +458,7 @@
                                                 <label class="input-label">Kelas</label>
                                                 <input type="text" 
                                                     x-model="idCards[cardIndex].class"
-                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 p-0 text-sm text-white placeholder-white/50 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/20 transition"
-                                                    placeholder="Masukkan Kelas">
+                                                    class="w-full bg-white/10 backdrop-blur-sm border border-white/30 p-0 text-sm text-white placeholder-white/50 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/20 transition">
                                             </div>
                                         </div>
                                     </div>
