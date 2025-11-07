@@ -18,42 +18,41 @@
         get totalPrice() {
             if (this.serviceType === 'studio') {
                 let total = 0;
-        
+    
                 // Tambahan waktu
                 if (this.timeAddition === '10') total += {{ $hargaTambahanWaktuStudio }};
                 else if (this.timeAddition === '20') total += {{ $hargaTambahanWaktuStudio }} * 2;
-        
+    
                 //Tambahan orang
-                if(this.numPeople > 7) {
+                if (this.numPeople > 7) {
                     total += this.numPeople * {{ $hargaStudio }};
-                }
-                else if(this.numPeople > 2) {
+                } else if (this.numPeople > 2) {
                     total += (this.numPeople - 2) * {{ $hargaStudio }};
                     total += {{ $hargaPacketStudio }};
-                }else {
+                } else {
                     total += {{ $hargaPacketStudio }};
                 }
-
+    
                 // Tambahan Tirai
-                if(this.tirai) {
+                if (this.tirai) {
                     total += {{ $hargaTirai }};
                 }
                 // Tambahan Spotlight
-                if(this.spotlight) {
+                if (this.spotlight) {
                     total += {{ $hargaSpotlight }};
                 }
-
+    
                 return total;
-            }else{
+            } else {
                 let total = this.numPeople * this.pricePerPerson;
-        
+    
                 // Tambahan waktu
                 if (this.timeAddition === '5') total += this.hargaTambahanWaktu;
                 else if (this.timeAddition === '10') total += this.hargaTambahanWaktu * 2;
-        
+    
                 // Tambahan bando
                 total += this.numBando * this.hargaBando;
-        
+    
                 return total;
             }
         },
@@ -161,20 +160,20 @@
                             <!-- Tirai -->
                             <div class="space-y-3" x-show="serviceType === 'studio'">
                                 <div class="flex items-center mb-3 text-white">
-                                    <input type="checkbox" id="tambahan_tirai" class="mr-2" x-model="tirai"> 
-                                <label class="text-gray-300">Tirai (Rp.
-                                    {{ number_format($hargaBando, 0, ',', '.') }} / pcs)</label>
+                                    <input type="checkbox" id="tambahan_tirai" class="mr-2" x-model="tirai">
+                                    <label class="text-gray-300">Tirai (Rp.
+                                        {{ number_format($hargaBando, 0, ',', '.') }} / pcs)</label>
                                 </div>
                             </div>
                             <!-- Spotlight -->
                             <div class="space-y-3" x-show="serviceType === 'studio'">
                                 <div class="flex items-center mb-3 text-white">
-                                    <input type="checkbox" id="tambahan_spotlight" class="mr-2" x-model="spotlight"> 
-                                <label class="text-gray-300">Spotlight (Rp.
-                                    {{ number_format($hargaBando, 0, ',', '.') }} / pcs)</label>
+                                    <input type="checkbox" id="tambahan_spotlight" class="mr-2" x-model="spotlight">
+                                    <label class="text-gray-300">Spotlight (Rp.
+                                        {{ number_format($hargaBando, 0, ',', '.') }} / pcs)</label>
                                 </div>
                             </div>
-                            
+
                             <!-- Penambahan Waktu -->
                             <div class="space-y-3" x-show="serviceType === 'photobox'">
                                 <label class="text-gray-300">Penambahan Waktu</label>
@@ -278,7 +277,7 @@
                                         </svg>
                                     </div>
                                     <span>
-                                        <span x-text="numPeople"></span> Orang  
+                                        <span x-text="numPeople"></span> Orang
                                         {{-- : Rp. <span x-text="totalPrice.toLocaleString('id-ID')"></span> --}}
                                     </span>
                                 </div>
@@ -330,37 +329,38 @@
                         <div x-show="showTutorials" x-transition class="grid sm:grid-cols-2 gap-4">
                             <!-- Tutorial 1 -->
                             <button type="button" @click="bonusModalOpen = true"
-                                class="cursor-pointer bg-gradient-to-br from-green-600/20 to-green-700/20 backdrop-blur-sm border border-green-500/30 rounded-2xl p-4 text-left hover:from-green-600/30 hover:to-green-700/30 transition-all duration-300">
+                                class="cursor-pointer bg-gradient-to-br from-blue-600/20 to-blue-700/20 backdrop-blur-sm border border-blue-500/30 rounded-2xl p-4 text-left hover:from-blue-600/30 hover:to-blue-700/30 transition-all duration-300">
                                 <h4 class="text-white mb-1">
-                                    <i class="fa-solid fa-gift text-green-400 mr-2"></i>
-                                    Tutorial Bonus
+                                    <i class="fa-solid fa-gift text-blue-400 mr-2"></i>
+                                    Tutorial Cara Mendapatkan Bonus Gratis Cetak 4R
                                 </h4>
                                 <p class="text-sm text-gray-400">
-                                    Pelajari cara mendapatkan bonus tambahan untuk paket Anda
+                                    Klik disini untuk melihat cara mendapatkan bonus gratis cetak/print ukuran 4R
                                 </p>
                                 <div class="mt-2 text-xs px-2 py-1 rounded-lg inline-block transition-all duration-300"
                                     :class="bonusAccepted
                                         ?
-                                        'bg-green-500/20 text-green-400 border border-green-500/30' :
+                                        'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
                                         'bg-gray-700/30 text-gray-400 border border-gray-600/30'"
                                     x-text="bonusAccepted ? '✓ Bonus Aktif' : 'Bonus Tidak Aktif'"></div>
                             </button>
 
                             <!-- Tutorial 2 -->
                             <button type="button" @click="confirmModalOpen = true"
-                                class="cursor-pointer bg-gradient-to-br from-purple-600/20 to-purple-700/20 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-4 text-left hover:from-purple-600/30 hover:to-purple-700/30 transition-all duration-300">
+                                class="cursor-pointer bg-gradient-to-br from-gray-700/40 to-gray-800/40 backdrop-blur-sm border border-gray-500/50 rounded-2xl p-4 text-left hover:from-gray-600/50 hover:to-gray-700/50 hover:border-gray-400/60 transition-all duration-300">
                                 <h4 class="text-white mb-1">
-                                    <i class="fa-solid fa-check-to-slot text-purple-400 mr-2"></i>
+                                    <i class="fa-solid fa-check-to-slot text-gray-300 mr-2"></i>
                                     Konfirmasi Detail
                                 </h4>
                                 <p class="text-sm text-gray-400">
                                     Pastikan Anda sudah membaca semua detail paket sebelum booking
                                 </p>
                                 <div
-                                    class="mt-2 text-xs px-2 py-1 rounded-lg inline-block bg-gray-700/30 text-gray-400 border border-gray-600/30">
+                                    class="mt-2 text-xs px-2 py-1 rounded-lg inline-block bg-gray-700/40 text-gray-300 border border-gray-500/40">
                                     Klik untuk verifikasi
                                 </div>
                             </button>
+
                         </div>
                     </div>
 
