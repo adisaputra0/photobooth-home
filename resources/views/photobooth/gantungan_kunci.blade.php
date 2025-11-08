@@ -1,6 +1,35 @@
 @extends('layouts.photobooth')
 
 @section('content')
+    <style>
+        .zoom-container {
+            border: none;
+        }
+
+        img {
+            will-change: transform;
+        }
+
+        @keyframes swing {
+            0% {
+                transform: rotate(1deg);
+            }
+
+            50% {
+                transform: rotate(-1deg);
+            }
+
+            100% {
+                transform: rotate(1deg);
+            }
+        }
+
+        .animate-swing {
+            animation: swing 3s ease-in-out infinite;
+            transform-origin: top center;
+        }
+    </style>
+
     <div class="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black p-4 sm:p-8">
         <div class="max-w-6xl mx-auto">
             <div class="bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 sm:p-8 shadow-2xl"
@@ -86,8 +115,13 @@
                                             <!-- Kotak Utama -->
                                             <div
                                                 class="relative w-full h-full bg-gray-900/20 border-4 border-pink-400/50 rounded-2xl overflow-hidden shadow-2xl">
-                                                <img :src="gantungan.foto" alt="Preview"
-                                                    class="w-full h-full object-cover transition-all duration-500" />
+                                                
+                                                <!-- Area Foto dengan Zoom -->
+                                                <div class="zoom-container w-full h-full relative overflow-hidden cursor-grab"
+                                                    :data-index="index">
+                                                    <img :src="gantungan.foto" alt="Preview"
+                                                        class="zoomable w-full h-full object-cover transition-all duration-500" />
+                                                </div>
     
                                                 <!-- Garis Tipis Bentuk Love -->
                                                 <svg class="absolute inset-0 pointer-events-none" viewBox="0 0 200 200"
@@ -103,8 +137,6 @@
                                         </div>
                                     </template>
     
-    
-    
                                     <!-- Bentuk Kotak -->
                                     <template x-if="bentuk === 'kotak'">
                                         <div class="flex items-center justify-center space-y-2 animate-swing">
@@ -113,15 +145,17 @@
                                                 <!-- Kotak Gantungan -->
                                                 <div class="relative border border-gray-400 bg-white rounded-md shadow-lg overflow-hidden flex flex-col"
                                                     style="width: 2.68cm; height: 4.33cm;">
-                                                    <!-- Area Foto -->
-                                                    <div class="flex-1 bg-gray-200 relative">
+                                                    
+                                                    <!-- Area Foto dengan Zoom -->
+                                                    <div class="flex-1 bg-gray-200 relative zoom-container overflow-hidden cursor-grab"
+                                                        :data-index="index">
                                                         <img :src="gantungan.foto" alt="Preview"
-                                                            class="absolute inset-0 w-full h-full object-cover transition-all duration-500" />
+                                                            class="zoomable absolute inset-0 w-full h-full object-cover transition-all duration-500" />
                                                     </div>
     
-                                                    <!-- Area Tulisan -->
+                                                    <!-- Area Tulisan (Tidak Kena Zoom) -->
                                                     <div
-                                                        class="bg-white text-black text-xs font-bold text-center py-[3px] tracking-wider border-t border-gray-300">
+                                                        class="bg-white text-black text-xs font-bold text-center py-[3px] tracking-wider border-t border-gray-300 relative z-10">
                                                         IGNOS STUDIO
                                                     </div>
                                                 </div>
@@ -129,19 +163,12 @@
                                         </div>
                                     </template>
     
-    
-    
                                     <!-- Gantungan -->
                                     <div
                                         class="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-gray-400 rounded-full border-4 border-gray-700">
                                     </div>
                                     <div class="absolute -top-7 left-1/2 -translate-x-1/2 w-1 h-6 bg-gray-500 rounded-full">
                                     </div>
-    
-    
-                                    <!-- Nomor -->
-                                    {{-- <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-gray-300 text-sm"
-                                        x-text="'Gantungan ' + (index + 1)"></div> --}}
                                 </div>
                             </template>
                         </div>
@@ -183,13 +210,14 @@
             }
         }
 
-        // Ambil data templates dari database
         $templates = \App\Models\IDCardTemplate::all()->map(fn($template) => [
             'id' => $template->id,
             'name' => $template->name,
             'image' => asset($template->file_path),
         ]);
     @endphp
+
+    <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
 
     <script>
         function gantunganKunci() {
@@ -199,13 +227,16 @@
                 fotoList: @json(array_merge($photos)),
                 gantunganKunciList: [],
                 gantunganAktif: 0,
+                imageTransforms: {},
 
                 init() {
                     this.aturJumlah();
+                    this.$nextTick(() => {
+                        this.initPanzoom();
+                    });
                 },
 
                 aturJumlah() {
-                    // Sesuaikan panjang array gantungan
                     if (this.jumlah > this.gantunganKunciList.length) {
                         for (let i = this.gantunganKunciList.length; i < this.jumlah; i++) {
                             this.gantunganKunciList.push({
@@ -216,33 +247,123 @@
                         this.gantunganKunciList.splice(this.jumlah);
                         if (this.gantunganAktif >= this.jumlah) this.gantunganAktif = 0;
                     }
+                    
+                    this.$nextTick(() => {
+                        this.initPanzoom();
+                    });
                 },
 
                 pilihFotoUntukGantungan(foto) {
+                    const previousFoto = this.gantunganKunciList[this.gantunganAktif].foto;
+                    
+                    if (previousFoto !== foto) {
+                        delete this.imageTransforms[this.gantunganAktif];
+                    }
+                    
                     this.gantunganKunciList[this.gantunganAktif].foto = foto;
+                    
+                    this.$nextTick(() => {
+                        this.initPanzoom();
+                    });
                 },
+
+                initPanzoom() {
+                    const images = document.querySelectorAll('.zoomable');
+
+                    images.forEach((img) => {
+                        const parent = img.closest('.zoom-container');
+                        if (!parent) return;
+
+                        const index = parseInt(parent.dataset.index);
+
+                        if (parent.panzoomInstance) {
+                            const currentTransform = parent.panzoomInstance.getScale();
+                            const currentPan = parent.panzoomInstance.getPan();
+
+                            this.imageTransforms[index] = {
+                                scale: currentTransform,
+                                x: currentPan.x,
+                                y: currentPan.y
+                            };
+
+                            parent.panzoomInstance.destroy();
+                            parent.removeEventListener('wheel', parent.wheelHandler);
+                            delete parent.panzoomInstance;
+                            delete parent.wheelHandler;
+                        }
+
+                        const initializePanzoom = () => {
+                            const containerW = parent.offsetWidth;
+                            const containerH = parent.offsetHeight;
+                            const naturalW = img.naturalWidth;
+                            const naturalH = img.naturalHeight;
+
+                            if (!naturalW || !naturalH || !containerW || !containerH) return;
+
+                            const fitScale = Math.max(containerW / naturalW, containerH / naturalH);
+
+                            const scaledW = naturalW * fitScale;
+                            const scaledH = naturalH * fitScale;
+                            const defaultX = (containerW - scaledW) / 2;
+                            const defaultY = (containerH - scaledH) / 2;
+
+                            const savedTransform = this.imageTransforms[index];
+
+                            const startScale = savedTransform?.scale || fitScale;
+                            const startX = savedTransform?.x ?? defaultX;
+                            const startY = savedTransform?.y ?? defaultY;
+
+                            const panzoom = Panzoom(img, {
+                                maxScale: 5,
+                                minScale: fitScale,
+                                startScale: startScale,
+                                startX: startX,
+                                startY: startY,
+                                contain: 'outside',
+                                cursor: 'grab',
+                                step: 0.1,
+                            });
+
+                            img.addEventListener('panzoomchange', (e) => {
+                                this.imageTransforms[index] = {
+                                    scale: e.detail.scale,
+                                    x: e.detail.x,
+                                    y: e.detail.y
+                                };
+                            });
+
+                            const wheelHandler = (e) => {
+                                e.preventDefault();
+                                panzoom.zoomWithWheel(e);
+                            };
+                            parent.addEventListener('wheel', wheelHandler, { passive: false });
+                            parent.wheelHandler = wheelHandler;
+
+                            img.addEventListener('dblclick', () => {
+                                panzoom.zoom(fitScale, { animate: true });
+                                panzoom.pan(defaultX, defaultY, { animate: true });
+
+                                delete this.imageTransforms[index];
+                            });
+
+                            parent.addEventListener('mousedown', () => parent.style.cursor = 'grabbing');
+                            parent.addEventListener('mouseup', () => parent.style.cursor = 'grab');
+
+                            parent.panzoomInstance = panzoom;
+                        };
+
+                        if (img.complete && img.naturalWidth > 0) {
+                            initializePanzoom();
+                        } else {
+                            img.addEventListener('load', initializePanzoom, { once: true });
+                        }
+                    });
+                },
+
+                cetakGantungan() {
+                    alert('Fungsi cetak akan diimplementasikan');
+                }
             }
         }
     </script>
-
-    <style>
-        @keyframes swing {
-            0% {
-                transform: rotate(1deg);
-            }
-
-            50% {
-                transform: rotate(-1deg);
-            }
-
-            100% {
-                transform: rotate(1deg);
-            }
-        }
-
-        .animate-swing {
-            animation: swing 3s ease-in-out infinite;
-            transform-origin: top center;
-        }
-    </style>
 @endsection
