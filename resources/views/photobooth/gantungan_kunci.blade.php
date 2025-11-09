@@ -24,10 +24,10 @@
             }
         }
 
-        .animate-swing {
+        /* .animate-swing {
             animation: swing 3s ease-in-out infinite;
             transform-origin: top center;
-        }
+        } */
     </style>
 
     <div class="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black p-4 sm:p-8">
@@ -54,24 +54,23 @@
 
                         <!-- Pilihan Bentuk -->
                         <div class="space-y-2">
-                            <label class="text-gray-300">Pilih Bentuk Gantungan</label>
+                            <label class="text-gray-300">Pilih Bentuk untuk Gantungan ke-<span x-text="gantunganAktif + 1"></span></label>
                             <div class="grid grid-cols-2 gap-4 mt-2">
-                                <button type="button" @click="bentuk = 'love'"
-                                    :class="bentuk === 'love' ? 'border-pink-500 bg-pink-500/20' : 'border-gray-600/50'"
+                                <button type="button" @click="ubahBentukGantungan('love')"
+                                    :class="gantunganKunciList[gantunganAktif]?.bentuk === 'love' ? 'border-pink-500 bg-pink-500/20' : 'border-gray-600/50'"
                                     class="border rounded-xl p-4 text-white flex flex-col items-center gap-2 hover:border-pink-400 transition-all duration-300">
                                     <i class="fa-solid fa-heart text-pink-400 text-2xl"></i>
                                     <span>Love</span>
                                 </button>
 
-                                <button type="button" @click="bentuk = 'kotak'"
-                                    :class="bentuk === 'kotak' ? 'border-blue-500 bg-blue-500/20' : 'border-gray-600/50'"
+                                <button type="button" @click="ubahBentukGantungan('kotak')"
+                                    :class="gantunganKunciList[gantunganAktif]?.bentuk === 'kotak' ? 'border-blue-500 bg-blue-500/20' : 'border-gray-600/50'"
                                     class="border rounded-xl p-4 text-white flex flex-col items-center gap-2 hover:border-blue-400 transition-all duration-300">
                                     <i class="fa-regular fa-square text-blue-400 text-2xl"></i>
                                     <span>Kotak</span>
                                 </button>
                             </div>
                         </div>
-
                         <!-- Pilihan Foto -->
                         <div class="space-y-2">
                             <label class="text-gray-300">Pilih Foto untuk Gantungan Aktif</label>
@@ -104,29 +103,34 @@
                     </div>
 
                     <!-- Kanan (Preview Gantungan Banyak) -->
-                    <div class="h-[100vh] overflow-y-auto overflow-x-hidden">
+                    <div class="h-[100vh] overflow-y-auto overflow-x-hidden ps-3">
                         <div class="grid grid-cols-2 h-fit gap-x-6 gap-y-12 relative mt-10">
                             <template x-for="(gantungan, index) in gantunganKunciList" :key="index">
                                 <div class="relative w-60 h-60 cursor-pointer" @click="gantunganAktif = index"
                                     :class="gantunganAktif === index ? 'scale-105' : 'opacity-70 hover:opacity-100 transition'">
+                                    
+                                    <!-- Badge Nomor -->
+                                    <div class="absolute -top-2 left-0 z-20 bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold border-2 border-white shadow-lg">
+                                        <span x-text="index + 1"></span>
+                                    </div>
+                                    
                                     <!-- Bentuk Love -->
-                                    <template x-if="bentuk === 'love'">
+                                    <template x-if="gantungan.bentuk === 'love'">
                                         <div class="relative w-full h-full flex justify-center items-center animate-swing">
                                             <!-- Kotak Utama -->
-                                            <div
-                                                class="relative w-full h-full bg-gray-900/20 border-4 border-pink-400/50 rounded-2xl overflow-hidden shadow-2xl">
+                                            <div class="relative w-full h-full bg-gray-900/20 border-4 border-pink-400/50 rounded-2xl overflow-hidden shadow-2xl">
                                                 
                                                 <!-- Area Foto dengan Zoom -->
                                                 <div class="zoom-container w-full h-full relative overflow-hidden cursor-grab"
                                                     :data-index="index">
                                                     <img :src="gantungan.foto" alt="Preview"
-                                                        class="zoomable w-full h-full object-cover transition-all duration-500" />
+                                                        class="zoomable absolute inset-0 w-full h-full object-cover transition-all duration-500" />
                                                 </div>
-    
+
                                                 <!-- Garis Tipis Bentuk Love -->
-                                                <svg class="absolute inset-0 pointer-events-none" viewBox="0 0 200 200"
+                                                <svg class="absolute inset-0 pointer-events-none z-10" viewBox="0 0 200 200"
                                                     xmlns="http://www.w3.org/2000/svg">
-                                                    <g transform="translate(60, 55) scale(1.6)">
+                                                    <g transform="translate(35, 35) scale(1.6)">
                                                         <path
                                                             d="M40.5121 74.3397L34.6378 69.0731C27.8183 62.9288 22.1804 57.6284 17.724 53.1721C13.2677 48.7158 9.7229 44.7152 7.08961 41.1704C4.45633 37.6256 2.61641 34.3678 1.56984 31.3969C0.523281 28.426 0 25.3876 0 22.2816C0 15.9348 2.12688 10.6344 6.38065 6.38065C10.6344 2.12688 15.9348 0 22.2816 0C25.7927 0 29.1349 0.742722 32.3084 2.22816C35.4818 3.71361 38.2164 5.80673 40.5121 8.50754C42.8078 5.80673 45.5423 3.71361 48.7158 2.22816C51.8892 0.742722 55.2315 0 58.7425 0C65.0894 0 70.3898 2.12688 74.6435 6.38065C78.8973 10.6344 81.0242 15.9348 81.0242 22.2816C81.0242 25.3876 80.5009 28.426 79.4543 31.3969C78.4078 34.3678 76.5678 37.6256 73.9346 41.1704C71.3013 44.7152 67.7565 48.7158 63.3001 53.1721C58.8438 57.6284 53.2059 62.9288 46.3863 69.0731L40.5121 74.3397Z"
                                                             stroke="white" stroke-width="1.5" fill="none" opacity="0.8"
@@ -136,9 +140,9 @@
                                             </div>
                                         </div>
                                     </template>
-    
+
                                     <!-- Bentuk Kotak -->
-                                    <template x-if="bentuk === 'kotak'">
+                                    <template x-if="gantungan.bentuk === 'kotak'">
                                         <div class="flex items-center justify-center space-y-2 animate-swing">
                                             <!-- Wrapper dengan scaling ringan -->
                                             <div class="transform scale-[1.25] origin-center">
@@ -152,7 +156,7 @@
                                                         <img :src="gantungan.foto" alt="Preview"
                                                             class="zoomable absolute inset-0 w-full h-full object-cover transition-all duration-500" />
                                                     </div>
-    
+
                                                     <!-- Area Tulisan (Tidak Kena Zoom) -->
                                                     <div
                                                         class="bg-white text-black text-xs font-bold text-center py-[3px] tracking-wider border-t border-gray-300 relative z-10">
@@ -162,7 +166,7 @@
                                             </div>
                                         </div>
                                     </template>
-    
+
                                     <!-- Gantungan -->
                                     <div
                                         class="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-gray-400 rounded-full border-4 border-gray-700">
@@ -220,150 +224,157 @@
     <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
 
     <script>
-        function gantunganKunci() {
-            return {
-                jumlah: 1,
-                bentuk: 'kotak',
-                fotoList: @json(array_merge($photos)),
-                gantunganKunciList: [],
-                gantunganAktif: 0,
-                imageTransforms: {},
+    function gantunganKunci() {
+        return {
+            jumlah: 1,
+            fotoList: @json(array_merge($photos)),
+            gantunganKunciList: [],
+            gantunganAktif: 0,
+            imageTransforms: {},
 
-                init() {
-                    this.aturJumlah();
-                    this.$nextTick(() => {
-                        this.initPanzoom();
-                    });
-                },
+            init() {
+                this.aturJumlah();
+                this.$nextTick(() => {
+                    this.initPanzoom();
+                });
+            },
 
-                aturJumlah() {
-                    if (this.jumlah > this.gantunganKunciList.length) {
-                        for (let i = this.gantunganKunciList.length; i < this.jumlah; i++) {
-                            this.gantunganKunciList.push({
-                                foto: this.fotoList[0]
-                            });
-                        }
-                    } else if (this.jumlah < this.gantunganKunciList.length) {
-                        this.gantunganKunciList.splice(this.jumlah);
-                        if (this.gantunganAktif >= this.jumlah) this.gantunganAktif = 0;
+            aturJumlah() {
+                if (this.jumlah > this.gantunganKunciList.length) {
+                    for (let i = this.gantunganKunciList.length; i < this.jumlah; i++) {
+                        this.gantunganKunciList.push({
+                            foto: this.fotoList[0],
+                            bentuk: 'kotak' // default bentuk
+                        });
                     }
-                    
-                    this.$nextTick(() => {
-                        this.initPanzoom();
-                    });
-                },
+                } else if (this.jumlah < this.gantunganKunciList.length) {
+                    this.gantunganKunciList.splice(this.jumlah);
+                    if (this.gantunganAktif >= this.jumlah) this.gantunganAktif = 0;
+                }
+                
+                this.$nextTick(() => {
+                    this.initPanzoom();
+                });
+            },
 
-                pilihFotoUntukGantungan(foto) {
-                    const previousFoto = this.gantunganKunciList[this.gantunganAktif].foto;
-                    
-                    if (previousFoto !== foto) {
-                        delete this.imageTransforms[this.gantunganAktif];
-                    }
-                    
-                    this.gantunganKunciList[this.gantunganAktif].foto = foto;
-                    
-                    this.$nextTick(() => {
-                        this.initPanzoom();
-                    });
-                },
+            ubahBentukGantungan(bentuk) {
+                this.gantunganKunciList[this.gantunganAktif].bentuk = bentuk;
+                this.$nextTick(() => {
+                    this.initPanzoom();
+                });
+            },
 
-                initPanzoom() {
-                    const images = document.querySelectorAll('.zoomable');
+            pilihFotoUntukGantungan(foto) {
+                const previousFoto = this.gantunganKunciList[this.gantunganAktif].foto;
+                
+                if (previousFoto !== foto) {
+                    delete this.imageTransforms[this.gantunganAktif];
+                }
+                
+                this.gantunganKunciList[this.gantunganAktif].foto = foto;
+                
+                this.$nextTick(() => {
+                    this.initPanzoom();
+                });
+            },
 
-                    images.forEach((img) => {
-                        const parent = img.closest('.zoom-container');
-                        if (!parent) return;
+            initPanzoom() {
+                const images = document.querySelectorAll('.zoomable');
 
-                        const index = parseInt(parent.dataset.index);
+                images.forEach((img) => {
+                    const parent = img.closest('.zoom-container');
+                    if (!parent) return;
 
-                        if (parent.panzoomInstance) {
-                            const currentTransform = parent.panzoomInstance.getScale();
-                            const currentPan = parent.panzoomInstance.getPan();
+                    const index = parseInt(parent.dataset.index);
 
-                            this.imageTransforms[index] = {
-                                scale: currentTransform,
-                                x: currentPan.x,
-                                y: currentPan.y
-                            };
+                    if (parent.panzoomInstance) {
+                        const currentTransform = parent.panzoomInstance.getScale();
+                        const currentPan = parent.panzoomInstance.getPan();
 
-                            parent.panzoomInstance.destroy();
-                            parent.removeEventListener('wheel', parent.wheelHandler);
-                            delete parent.panzoomInstance;
-                            delete parent.wheelHandler;
-                        }
-
-                        const initializePanzoom = () => {
-                            const containerW = parent.offsetWidth;
-                            const containerH = parent.offsetHeight;
-                            const naturalW = img.naturalWidth;
-                            const naturalH = img.naturalHeight;
-
-                            if (!naturalW || !naturalH || !containerW || !containerH) return;
-
-                            const fitScale = Math.max(containerW / naturalW, containerH / naturalH);
-
-                            const scaledW = naturalW * fitScale;
-                            const scaledH = naturalH * fitScale;
-                            const defaultX = (containerW - scaledW) / 2;
-                            const defaultY = (containerH - scaledH) / 2;
-
-                            const savedTransform = this.imageTransforms[index];
-
-                            const startScale = savedTransform?.scale || fitScale;
-                            const startX = savedTransform?.x ?? defaultX;
-                            const startY = savedTransform?.y ?? defaultY;
-
-                            const panzoom = Panzoom(img, {
-                                maxScale: 5,
-                                minScale: fitScale,
-                                startScale: startScale,
-                                startX: startX,
-                                startY: startY,
-                                contain: 'outside',
-                                cursor: 'grab',
-                                step: 0.1,
-                            });
-
-                            img.addEventListener('panzoomchange', (e) => {
-                                this.imageTransforms[index] = {
-                                    scale: e.detail.scale,
-                                    x: e.detail.x,
-                                    y: e.detail.y
-                                };
-                            });
-
-                            const wheelHandler = (e) => {
-                                e.preventDefault();
-                                panzoom.zoomWithWheel(e);
-                            };
-                            parent.addEventListener('wheel', wheelHandler, { passive: false });
-                            parent.wheelHandler = wheelHandler;
-
-                            img.addEventListener('dblclick', () => {
-                                panzoom.zoom(fitScale, { animate: true });
-                                panzoom.pan(defaultX, defaultY, { animate: true });
-
-                                delete this.imageTransforms[index];
-                            });
-
-                            parent.addEventListener('mousedown', () => parent.style.cursor = 'grabbing');
-                            parent.addEventListener('mouseup', () => parent.style.cursor = 'grab');
-
-                            parent.panzoomInstance = panzoom;
+                        this.imageTransforms[index] = {
+                            scale: currentTransform,
+                            x: currentPan.x,
+                            y: currentPan.y
                         };
 
-                        if (img.complete && img.naturalWidth > 0) {
-                            initializePanzoom();
-                        } else {
-                            img.addEventListener('load', initializePanzoom, { once: true });
-                        }
-                    });
-                },
+                        parent.panzoomInstance.destroy();
+                        parent.removeEventListener('wheel', parent.wheelHandler);
+                        delete parent.panzoomInstance;
+                        delete parent.wheelHandler;
+                    }
 
-                cetakGantungan() {
-                    alert('Fungsi cetak akan diimplementasikan');
-                }
+                    const initializePanzoom = () => {
+                        const containerW = parent.offsetWidth;
+                        const containerH = parent.offsetHeight;
+                        const naturalW = img.naturalWidth;
+                        const naturalH = img.naturalHeight;
+
+                        if (!naturalW || !naturalH || !containerW || !containerH) return;
+
+                        const fitScale = Math.max(containerW / naturalW, containerH / naturalH);
+
+                        const scaledW = naturalW * fitScale;
+                        const scaledH = naturalH * fitScale;
+                        const defaultX = (containerW - scaledW) / 2;
+                        const defaultY = (containerH - scaledH) / 2;
+
+                        const savedTransform = this.imageTransforms[index];
+
+                        const startScale = savedTransform?.scale || fitScale;
+                        const startX = savedTransform?.x ?? defaultX;
+                        const startY = savedTransform?.y ?? defaultY;
+
+                        const panzoom = Panzoom(img, {
+                            maxScale: 5,
+                            minScale: fitScale,
+                            startScale: startScale,
+                            startX: startX,
+                            startY: startY,
+                            contain: 'outside',
+                            cursor: 'grab',
+                            step: 0.1,
+                        });
+
+                        img.addEventListener('panzoomchange', (e) => {
+                            this.imageTransforms[index] = {
+                                scale: e.detail.scale,
+                                x: e.detail.x,
+                                y: e.detail.y
+                            };
+                        });
+
+                        const wheelHandler = (e) => {
+                            e.preventDefault();
+                            panzoom.zoomWithWheel(e);
+                        };
+                        parent.addEventListener('wheel', wheelHandler, { passive: false });
+                        parent.wheelHandler = wheelHandler;
+
+                        img.addEventListener('dblclick', () => {
+                            panzoom.zoom(fitScale, { animate: true });
+                            panzoom.pan(defaultX, defaultY, { animate: true });
+
+                            delete this.imageTransforms[index];
+                        });
+
+                        parent.addEventListener('mousedown', () => parent.style.cursor = 'grabbing');
+                        parent.addEventListener('mouseup', () => parent.style.cursor = 'grab');
+
+                        parent.panzoomInstance = panzoom;
+                    };
+
+                    if (img.complete && img.naturalWidth > 0) {
+                        initializePanzoom();
+                    } else {
+                        img.addEventListener('load', initializePanzoom, { once: true });
+                    }
+                });
+            },
+
+            cetakGantungan() {
+                alert('Fungsi cetak akan diimplementasikan');
             }
         }
-    </script>
+    }
+</script>
 @endsection
