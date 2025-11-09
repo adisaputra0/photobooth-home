@@ -244,7 +244,7 @@
                     for (let i = this.gantunganKunciList.length; i < this.jumlah; i++) {
                         this.gantunganKunciList.push({
                             foto: this.fotoList[0],
-                            bentuk: 'kotak' // default bentuk
+                            bentuk: 'kotak'
                         });
                     }
                 } else if (this.jumlah < this.gantunganKunciList.length) {
@@ -372,7 +372,103 @@
             },
 
             cetakGantungan() {
-                alert('Fungsi cetak akan diimplementasikan');
+                const gantunganKotak = this.gantunganKunciList.filter(g => g.bentuk === 'kotak');
+                
+                if (gantunganKotak.length === 0) {
+                    alert('Tidak ada gantungan kunci dengan bentuk kotak untuk dicetak');
+                    return;
+                }
+
+                const printWindow = window.open('', '_blank');
+                
+                let gantunganHTML = '';
+                gantunganKotak.forEach((gantungan, index) => {
+                    const originalIndex = this.gantunganKunciList.indexOf(gantungan);
+                    const container = document.querySelector(`.zoom-container[data-index="${originalIndex}"]`);
+                    const img = container?.querySelector('.zoomable');
+                    
+                    let transform = '';
+                    if (img && this.imageTransforms[originalIndex]) {
+                        const t = this.imageTransforms[originalIndex];
+                        transform = `transform: scale(${t.scale}) translate(${t.x / t.scale}px, ${t.y / t.scale}px); transform-origin: 0 0;`;
+                    }
+                    
+                    gantunganHTML += `
+                        <div class="border border-gray-400 bg-white" style="width: 2.68cm; height: 4.33cm; overflow: hidden; display: flex; flex-direction: column;">
+                            <div style="flex: 1; background-color: #e5e7eb; position: relative; overflow: hidden;">
+                                <img src="${gantungan.foto}" 
+                                    style="width: 100%; height: 100%; object-fit: cover; ${transform}" 
+                                    alt="Foto ${index + 1}" />
+                            </div>
+                            <div style="background-color: white; color: black; font-size: 8px; font-weight: bold; text-align: center; padding: 2px 0; letter-spacing: 0.05em; border-top: 1px solid #d1d5db;">
+                                IGNOS STUDIO
+                            </div>
+                        </div>
+                    `;
+                });
+
+                const printHTML = `
+                    <!doctype html>
+                    <html>
+                    <head>
+                        <meta charset="UTF-8" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                        <title>Cetak Gantungan Kunci</title>
+                        <style>
+                            * {
+                                margin: 0;
+                                padding: 0;
+                                box-sizing: border-box;
+                            }
+                            
+                            @page {
+                                size: 10.2cm 15.2cm;
+                                margin: 0;
+                            }
+                            
+                            body {
+                                margin: 0;
+                                padding: 0;
+                            }
+                            
+                            .print-container {
+                                width: 10.2cm;
+                                height: 15.2cm;
+                                display: flex;
+                                flex-wrap: wrap;
+                                gap: 0;
+                                padding: 0;
+                                margin: 0;
+                                page-break-after: always;
+                            }
+                            
+                            @media print {
+                                body {
+                                    margin: 0;
+                                    padding: 0;
+                                }
+                                
+                                .print-container {
+                                    page-break-after: always;
+                                }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="print-container">
+                            ${gantunganHTML}
+                        </div>
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                            };
+                        <\/script>
+                    </body>
+                    </html>
+                `;
+                
+                printWindow.document.write(printHTML);
+                printWindow.document.close();
             }
         }
     }
