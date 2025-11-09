@@ -394,7 +394,8 @@
                     }
                     
                     gantunganHTML += `
-                        <div class="border border-gray-400 bg-white" style="width: 2.68cm; height: 4.33cm; overflow: hidden; display: flex; flex-direction: column;">
+                        <div class="border border-gray-400 bg-white" style="width: 2.68cm; height: 4.33cm; overflow: hidden; display: flex; flex-direction: column;
+                                border: 1px solid gray;">
                             <div style="flex: 1; background-color: #e5e7eb; position: relative; overflow: hidden;">
                                 <img src="${gantungan.foto}" 
                                     style="width: 100%; height: 100%; object-fit: cover; ${transform}" 
