@@ -406,6 +406,19 @@
                             </div>
                         </div>
                     `;
+                    gantunganHTML += `
+                        <div class="border border-gray-400 bg-white" style="width: 2.68cm; height: 4.33cm; overflow: hidden; display: flex; flex-direction: column;
+                                border: 1px solid gray;">
+                            <div style="flex: 1; background-color: #e5e7eb; position: relative; overflow: hidden;">
+                                <img src="${gantungan.foto}" 
+                                    style="width: 100%; height: 100%; object-fit: cover; ${transform}" 
+                                    alt="Foto ${index + 1}" />
+                            </div>
+                            <div style="background-color: white; color: black; font-size: 8px; font-weight: bold; text-align: center; padding: 2px 0; letter-spacing: 0.05em; border-top: 1px solid #d1d5db;">
+                                IGNOS STUDIO
+                            </div>
+                        </div>
+                    `;
                 });
 
                 const printHTML = `
