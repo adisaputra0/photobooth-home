@@ -71,10 +71,57 @@
 
         /* ID Card size: 86x54mm = 3.39x2.13 inch = 323x203px at 96dpi */
         /* Preview size: 1.5x larger for better visibility */
-        .idcard-container {
+        /* .idcard-container {
             width: 484px;
             height: 304px;
+        } */
+         /* Ganti ukuran ID Card Container - LEBIH KECIL = LEBIH TAJAM */
+        /* Tambahkan ini di <style> section */
+        .idcard-container {
+            width: 323px;
+            height: 203px;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+            /* TAMBAHKAN INI: */
+            background-size: 100% 100% !important; /* Stretch exact, jangan cover */
+            background-repeat: no-repeat !important;
         }
+
+        /* Untuk semua background image */
+        [style*="background-image"] {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+
+        /* Atau kalau mau agak lebih besar tapi masih tajam */
+        .idcard-container-medium {
+            width: 400px;  /* 1.24x dari actual size */
+            height: 252px;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+
+        /* Update ukuran foto di dalam card */
+        .idcard-container .zoom-container {
+            width: 108px;   /* Proporsional dengan container baru */
+            height: 156px;
+        }
+
+        /* Untuk medium size */
+        .idcard-container-medium .zoom-container {
+            width: 134px;
+            height: 193px;
+        }
+
+        /* Improve image rendering di semua gambar */
+        .idcard-container img,
+        .zoom-container img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            -ms-interpolation-mode: nearest-neighbor;
+        }
+
 
         /* 4R paper size: 10x15cm = 3.94x5.91 inch = 378x567px at 96dpi */
         .paper-4r {
@@ -96,9 +143,19 @@
             }
             
             /* Reset to actual size for printing */
-            .idcard-container {
+            /* .idcard-container {
                 width: 323px !important;
                 height: 203px !important;
+            } */
+            .idcard-container,
+            .idcard-container-medium {
+                width: 323px !important;
+                height: 203px !important;
+            }
+            
+            .zoom-container {
+                width: 108px !important;
+                height: 156px !important;
             }
         }
 
@@ -266,30 +323,89 @@
             const cardElement = document.querySelector(`#idcard-${cardIndex}`);
             if (!cardElement) return alert('Card tidak ditemukan');
 
-            // Scale factor untuk menyesuaikan dari preview ke ukuran print sebenarnya
-            const scaleFactor = 323 / 484; // actual size / preview size
+            // Ukuran target: 1795x1205px (4R @ 300dpi)
+            const TARGET_WIDTH = 1795;
+            const TARGET_HEIGHT = 1205;
+            
+            // Hitung scale yang dibutuhkan
+            const currentWidth = 484;  // dari CSS .idcard-container
+            const currentHeight = 304;
+            const scaleX = TARGET_WIDTH / currentWidth;
+            const scaleY = TARGET_HEIGHT / currentHeight;
+            const scale = Math.min(scaleX, scaleY); // ~3.7
 
             html2canvas(cardElement, {
-                scale: 3 * scaleFactor, // Adjust scale untuk ukuran yang tepat
+                scale: scale,
                 useCORS: true,
                 backgroundColor: '#fff',
-                width: 484,
-                height: 304
+                logging: false,
+                allowTaint: true,
+                removeContainer: true,
+                // JANGAN set width/height, biar otomatis
             }).then(canvas => {
-                // Resize canvas ke ukuran print sebenarnya
-                const printCanvas = document.createElement('canvas');
-                printCanvas.width = 323;
-                printCanvas.height = 203;
-                const ctx = printCanvas.getContext('2d');
-                ctx.drawImage(canvas, 0, 0, 323, 203);
+                // Resize canvas ke EXACTLY 1795x1205
+                const finalCanvas = document.createElement('canvas');
+                finalCanvas.width = TARGET_WIDTH;
+                finalCanvas.height = TARGET_HEIGHT;
                 
-                const image = printCanvas.toDataURL('image/png');
+                const ctx = finalCanvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, TARGET_WIDTH, TARGET_HEIGHT);
+                
+                // Center ID card di kertas 4R
+                const offsetX = (TARGET_WIDTH - canvas.width) / 2;
+                const offsetY = (TARGET_HEIGHT - canvas.height) / 2;
+                ctx.drawImage(canvas, offsetX, offsetY);
+
+                const image = finalCanvas.toDataURL('image/png', 1.0);
 
                 const printWindow = window.open('', '_blank');
-                const html = `<html><head><title>Print ID Card</title><style>@page{size:4in 6in;margin:0;}body{margin:0;display:flex;align-items:center;justify-content:center;background:white;height:100vh;}img{width:323px;height:203px;object-fit:contain;}</style></head><body><img src='${image}' alt='ID Card Print'/><script>window.onload=function(){window.print();setTimeout(()=>window.close(),1000);}<\/script></body></html>`;
+                
+                const html = `
+                    <html>
+                    <head>
+                        <title>Print ID Card 4R</title>
+                        <style>
+                            @page {
+                                size: 4in 6in;  /* 4R size */
+                                margin: 0;
+                            }
+                            body {
+                                margin: 0;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                background: white;
+                                height: 100vh;
+                            }
+                            img {
+                                width: 100%;
+                                height: 100%;
+                                object-fit: contain;
+                                image-rendering: -webkit-optimize-contrast;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <img src='${image}' alt='ID Card 4R Print'/>
+                        <script>
+                            window.onload = function() {
+                                setTimeout(() => {
+                                    window.print();
+                                    setTimeout(() => window.close(), 1000);
+                                }, 500);
+                            };
+                        <\/script>
+                    </body>
+                    </html>
+                `;
+                
                 printWindow.document.open();
                 printWindow.document.write(html);
                 printWindow.document.close();
+            }).catch(err => {
+                console.error('Error generating canvas:', err);
+                alert('Gagal membuat gambar. Coba lagi.');
             });
         },
 
@@ -389,10 +505,10 @@
                                             class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg transition-all duration-200 flex items-center gap-1">
                                             🖨️ Print 4R
                                         </button>
-                                        <button @click="downloadSingleCard(cardIndex)"
+                                        {{-- <button @click="downloadSingleCard(cardIndex)"
                                             class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg transition-all duration-200 flex items-center gap-1">
                                             💾 Download HD
-                                        </button>
+                                        </button> --}}
                                     </div>
                                 </div>
 
@@ -433,7 +549,7 @@
 
                                         <!-- Data Section with Labels -->
                                         <div class="w-full">
-                                            <div class="mb-2">
+                                            {{-- <div class="mb-2">
                                                 <label class="input-label">ID Number</label>
                                                 <input type="text" 
                                                     x-model="idCards[cardIndex].idNumber"
@@ -459,7 +575,7 @@
                                                 <input type="text" 
                                                     x-model="idCards[cardIndex].class"
                                                     class="w-full bg-white/10 backdrop-blur-sm border border-white/30 p-0 text-sm text-white placeholder-white/50 focus:border-white focus:outline-none focus:ring-2 focus:ring-white/20 transition">
-                                            </div>
+                                            </div> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -483,7 +599,7 @@
             class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-gray-900/90 text-gray-100 border border-gray-700/60 backdrop-blur-md rounded-2xl shadow-2xl px-6 py-3 flex items-center gap-4 max-w-3xl w-[90%] text-sm no-print">
             <div class="flex-1 leading-relaxed">
                 💡 <strong>Panduan:</strong> Pilih foto dari panel kiri, kemudian isi data langsung di dalam ID Card. 
-                Klik <strong>"Print 4R"</strong> atau <strong>"Download HD"</strong> pada masing-masing kartu untuk mencetak/menyimpan.
+                Klik <strong>"Print 4R"</strong> pada masing-masing kartu untuk mencetak.
             </div>
             <button @click="showTutorialBar = false" class="text-gray-400 hover:text-white transition text-lg leading-none">
                 ✕
