@@ -171,9 +171,12 @@
                     return 'grid-cols-2 gap-x-4 p-4 pb-[7rem]';
                 } else if (slots === 6) {
                     // 6 slots: Grid 3x2 dengan gap kecil dan padding lebih banyak
-                    {{-- return 'grid-cols-2 gap-y-0 gap-x-10 p-[3rem_2rem]'; --}}
                     return 'grid-cols-2 gap-x-5 gap-y-2 my-[80px] px-5 h-max';
+                }else if (slots === 8) {
+                    // 6 slots: Grid 3x2 dengan gap kecil dan padding lebih banyak
+                    return 'grid-cols-2 gap-x-[3.5rem] gap-y-2 my-[123px] px-5 h-max';
                 }
+
 
                 // Default fallback
                 return 'grid-cols-2 gap-4 p-4 pb-16';
@@ -192,7 +195,11 @@
                 } else if (slots === 6) {
                     // 6 slots: Aspect ratio lebih compact
                     return 'aspect-[1/0.9]';
+                }else if (slots === 8) {
+                    // 8 slots: Aspect ratio lebih compact
+                    return 'aspect-[1.6/1.1]';
                 }
+
 
                 return 'aspect-square';
             },

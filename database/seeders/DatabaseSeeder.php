@@ -39,7 +39,12 @@ class DatabaseSeeder extends Seeder
             "file_path" => "templates/slot-6.png",
             "slots" => 6,
         ]);
-        
+        PhotoboothTemplate::create([
+            "name" => "Template 4",
+            "file_path" => "templates/slot-8.png",
+            "slots" => 8,
+        ]);
+
         IDCardTemplate::create([
             "name" => "Template 1",
             "file_path" => "uploads/idcard_templates/1.png",
