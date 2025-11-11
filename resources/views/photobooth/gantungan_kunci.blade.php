@@ -473,9 +473,7 @@
                             ${gantunganHTML}
                         </div>
                         <script>
-                            window.onload = function() {
-                                window.print();
-                            };
+                            window.onload=function(){window.print();setTimeout(()=>window.close(),1000);}
                         <\/script>
                     </body>
                     </html>
