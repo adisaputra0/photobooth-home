@@ -4,6 +4,7 @@
     <div class="bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen p-4 sm:p-8">
         <div x-data="templateSelector"
             class="max-w-5xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 sm:p-8 shadow-2xl">
+
             <!-- Header -->
             <div class="text-center mb-8">
                 <p class="text-sm text-gray-400 mb-1">Langkah 2 dari 3</p>
@@ -40,12 +41,14 @@
                 <h2 class="text-white text-lg font-semibold mb-4">
                     Preview Pilihan Setiap Orang
                 </h2>
+
                 <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
                     <template x-for="(u, index) in users" :key="index">
                         <div
                             class="relative rounded-xl border border-gray-700/50 bg-gray-800/40 p-3 flex flex-col items-center text-center group">
-                            <!-- Hapus -->
-                            <button x-show="u.template" @click="removeTemplate(index)"
+
+                            <!-- Tombol hapus -->
+                            <button x-show="u.templates.length > 0" @click="removeTemplate(index)"
                                 class="absolute top-2 right-2 bg-red-600/80 hover:bg-red-700 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
@@ -56,14 +59,20 @@
 
                             <p class="text-white font-medium mb-1" x-text="`Orang ${index + 1}`"></p>
 
-                            <template x-if="u.template">
-                                <div>
-                                    <img :src="u.template.image" class="w-full h-28 object-cover rounded-lg mb-2" />
-                                    <p class="text-gray-300 text-sm" x-text="u.template.name"></p>
+                            <!-- Jika sudah memilih -->
+                            <template x-if="u.templates.length > 0">
+                                <div class="flex gap-3 justify-center">
+                                    <template x-for="img in u.templates">
+                                        <div>
+                                            <img :src="img.image" class="w-full h-28 object-cover rounded-lg mb-2" />
+                                            <p class="text-gray-300 text-sm" x-text="img.name"></p>
+                                        </div>
+                                    </template>
                                 </div>
                             </template>
 
-                            <template x-if="!u.template">
+                            <!-- Jika belum memilih -->
+                            <template x-if="u.templates.length === 0">
                                 <p class="text-gray-500 text-sm">Belum memilih template</p>
                             </template>
                         </div>
@@ -81,12 +90,14 @@
                     Lanjut ke Penyusunan Hasil →
                 </button>
             </div>
+
         </div>
     </div>
 
     <script>
         document.addEventListener("alpine:init", () => {
             Alpine.data("templateSelector", () => ({
+
                 templates: {{ Js::from(
                     $templates->map(
                         fn($template) => [
@@ -103,66 +114,93 @@
                     ),
                 ) }},
 
-                // Jumlah user (contoh ambil dari localStorage atau default 3)
-                numPeople: localStorage.getItem("numPeople") ? (localStorage.getItem("bonusAccepted") ==
-                    'true' ?
-                    Number(
-                        localStorage.getItem("numPeople")) * 2 : Number(localStorage.getItem(
-                        "numPeople"))) : 2,
+                // jumlah orang
+                numPeople: localStorage.getItem("numPeople") ?
+                    (localStorage.getItem("bonusAccepted") == 'true' ?
+                        Number(localStorage.getItem("numPeople")) :
+                        Number(localStorage.getItem("numPeople"))) : 2,
+
                 users: [],
                 currentUser: 0,
                 selectedTemplate: null,
 
                 get currentUserText() {
-                    return this.currentUser < this.numPeople ?
-                        `Sedang memilih template untuk User ${this.currentUser + 1}` :
-                        "Semua user sudah memilih template ✅";
+                    const isBonus = localStorage.getItem("bonusAccepted") === "true";
+
+                    if (this.currentUser < this.numPeople) {
+                        return isBonus ?
+                            `User ${this.currentUser + 1} memilih 2 template` :
+                            `Sedang memilih template untuk User ${this.currentUser + 1}`;
+                    }
+                    return "Semua user sudah memilih template ✅";
                 },
 
                 init() {
-                    // Buat array user kosong
+                    // Struktur data baru: tiap user punya array templates
                     this.users = Array.from({
                         length: this.numPeople
                     }, () => ({
-                        template: null,
+                        templates: [],
                     }));
                 },
 
                 selectTemplate(template) {
                     if (this.currentUser >= this.numPeople) return;
-                    this.selectedTemplate = template;
-                    this.users[this.currentUser].template = template;
-                    this.currentUser++;
 
-                    if (this.currentUser < this.numPeople) {
-                        this.selectedTemplate = null;
+                    const isBonus = localStorage.getItem("bonusAccepted") === "true";
+                    let current = this.users[this.currentUser];
+
+                    if (isBonus) {
+                        if (current.templates.length < 2) {
+                            current.templates.push(template);
+
+                            if (current.templates.length === 2) {
+                                this.currentUser++;
+                                this.reorderTemplatesForUser();
+                            }
+                        }
+                    } else {
+                        current.templates = [template];
+                        this.currentUser++;
                     }
+
+                    this.selectedTemplate = null;
                 },
 
                 removeTemplate(index) {
-                    this.users[index].template = null;
+                    this.users[index].templates = [];
+
                     if (index < this.currentUser) {
                         this.currentUser = index;
                     }
+
                     this.selectedTemplate = null;
                 },
 
                 handleNext() {
-                    if (this.users.some((u) => !u.template))
-                        return alert(
-                            "Semua user harus memilih template terlebih dahulu!"
-                        );
-                    // localStorage.setItem(
-                    //   "selectedTemplates",
-                    //   JSON.stringify(this.users)
-                    // );
+                    const isBonus = localStorage.getItem("bonusAccepted") === "true";
 
-                    // Simpan hanya ID template yang dipilih
-                    const templateIds = this.users.map(user => user.template.id);
-                    console.log("Template IDs:", templateIds);
+                    if (isBonus) {
+                        // semua user harus punya 2 template
+                        if (this.users.some(u => u.templates.length < 2)) {
+                            return alert("Setiap user harus memilih 2 template!");
+                        }
+                    } else {
+                        if (this.users.some(u => u.templates.length < 1)) {
+                            return alert("Semua user harus memilih template terlebih dahulu!");
+                        }
+                    }
+
+                    // simpan hanya ID template
+                    const templateIds = this.users.flatMap(u =>
+                        u.templates.map(t => t.id)
+                    );
+
                     localStorage.setItem("selectedTemplates", JSON.stringify(templateIds));
+
                     window.location.href = "{{ route('photobooth.final') }}";
                 },
+
             }));
         });
     </script>
