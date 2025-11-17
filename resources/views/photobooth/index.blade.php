@@ -3,7 +3,7 @@
 @section('content')
     <div x-data="{
         serviceType: 'photobox',
-        numPeople: 2,
+        numPeople: 4,
         numBando: 0,
         timeAddition: '-',
         showTutorials: false,
@@ -17,6 +17,7 @@
         hargaTambahanWaktu: {{ $hargaTambahanWaktu }},
         get totalPrice() {
             if (this.serviceType === 'studio') {
+                this.numPeople = 2;
                 let total = 0;
     
                 // Tambahan waktu
@@ -44,6 +45,7 @@
     
                 return total;
             } else {
+                this.numPeople = 4;
                 let total = this.numPeople * this.pricePerPerson;
     
                 // Tambahan waktu
@@ -142,7 +144,7 @@
                             <!-- Jumlah Orang -->
                             <div>
                                 <label class="text-gray-300 mb-3">Masukkan Jumlah Orang</label>
-                                <input type="number" x-model.number="numPeople" @change="updateNumPeople()" min="1"
+                                <input type="number" x-model.number="numPeople" @change="updateNumPeople()" min="2"
                                     id="numPeople"
                                     class="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-gray-500 transition-all duration-300" />
                             </div>
@@ -335,7 +337,8 @@
                                     Tutorial Cara Mendapatkan Bonus Gratis Cetak 4R
                                 </h4>
                                 <p class="text-sm text-gray-400">
-                                    Klik disini untuk melihat cara mendapatkan bonus gratis cetak/print ukuran 4R
+                                    Klik disini untuk melihat cara mendapatkan bonus gratis cetak/print ukuran 4R! Dapatkan
+                                    2x lipat jumlah cetak!
                                 </p>
                                 <div class="mt-2 text-xs px-2 py-1 rounded-lg inline-block transition-all duration-300"
                                     :class="bonusAccepted
@@ -390,18 +393,18 @@
                     </button>
                     <h2 class="text-gray-800 mb-6">
                         <i class="fa-solid fa-gift text-green-500 mr-2"></i>
-                        Tutorial 1: Penawaran Bonus Spesial
+                        Tutorial Cara Mendapatkan Bonus Gratis Cetak 4R
                     </h2>
                     <div class="bg-blue-50/80 border border-blue-200/50 rounded-xl p-4 mb-4">
-                        <h3 class="text-blue-800 mb-2">🎁 Penawaran Bonus Eksklusif!</h3>
+                        <h3 class="text-blue-800 mb-2">🎁 GRATIS PRINT 4R! Dapatkan 2x Lipat Jumlah Cetak!</h3>
                         <p class="text-blue-700 text-sm">
-                            Dapatkan bonus tambahan dengan mengikuti syarat berikut:
+                            Contoh: Awalnya 6 print jadi 12 print ukuran 4R!
                         </p>
                     </div>
                     <ul class="text-sm text-gray-700 space-y-2 list-disc ml-6">
-                        <li>Follow dan mention akun Instagram @ignos.studio</li>
-                        <li>Dapatkan tambahan 10k softcopy files gratis</li>
-                        <li>Free costume & accessories</li>
+                        <li>Masing-masing orang membuat ulasan di gmaps: IGNOS STUDIO</li>
+                        <img src="{{ asset('templates/ulasan.png') }}" class="rounded-lg w-5/6" alt="">
+
                     </ul>
                     <div class="flex gap-3 pt-6">
                         <button type="button" @click="resetBonusAccept()"

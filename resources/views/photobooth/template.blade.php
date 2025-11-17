@@ -21,7 +21,7 @@
                     <div class="relative group cursor-pointer rounded-2xl overflow-hidden border-2 transition-all duration-300"
                         :class="selectedTemplate?.id === t.id ? 'border-blue-500' : 'border-gray-700/50'"
                         @click="selectTemplate(t)">
-                        <img :src="t.image" :alt="t.name" class="w-full aspect-[1/1] object-cover" />
+                        <img :src="t.image" :alt="t.name" class="w-full aspect-[4/6] object-cover" />
                         <div
                             class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
                             <span class="text-white font-medium" x-text="t.name"></span>
@@ -92,7 +92,13 @@
                         fn($template) => [
                             'id' => $template->id,
                             'name' => $template->name,
-                            'image' => asset($template->file_path),
+                            'image' => match ($template->id) {
+                                1 => asset('templates/tm-slot-1.png'),
+                                2 => asset('templates/tm-slot-4.png'),
+                                3 => asset('templates/tm-slot-6.png'),
+                                4 => asset('templates/tm-slot-8.png'),
+                                default => asset($template->file_path),
+                            },
                         ],
                     ),
                 ) }},
