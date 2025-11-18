@@ -75,6 +75,7 @@
         showOfferModal: false,
         audio: null,
         remainingTime: 0,
+        bonusAccepted: localStorage.getItem('bonusAccepted') || 'false',
         closeAlertModal() {
             if(document.getElementById('password').value == 'admin123'){
                 this.showAlert = false;
@@ -410,7 +411,32 @@
                 <div class="h-[100vh] overflow-auto custom-scrollbar">
                     <h2 class="text-gray-200 mb-4 text-center">Foto Anda</h2>
 
-                    <template x-if="selectedTemplates.length > 1">
+                    <template x-if="bonusAccepted == 'true'">
+                        <div class="flex gap-2 mb-4 justify-center flex-wrap">
+                            <!-- Loop grup (2 orang per grup) -->
+                            <template x-for="(group, gIdx) in Math.ceil(selectedTemplates.length / 2)" :key="gIdx">
+                                <div>
+                                    <!-- Judul Grup -->
+                                    <h2 class="font-bold text-lg mb-2 text-white text-center" x-text="`Orang ${gIdx + 1}`"></h2>
+
+                                    <div class="flex flex-row gap-2">
+                                        <!-- Loop dua orang dalam grup -->
+                                        <template x-for="i in 2" :key="i">
+                                            <template x-if="(gIdx * 2 + (i - 1)) < selectedTemplates.length">
+                                                <button
+                                                    @click="activeTemplate = gIdx * 2 + (i - 1)"
+                                                    :class="activeTemplate === (gIdx * 2 + (i - 1)) ? 'bg-blue-600' : 'bg-gray-700'"
+                                                    class="px-3 py-1 rounded-lg text-white text-xs"
+                                                    x-text="selectedTemplates[gIdx * 2 + (i - 1)].name"
+                                                ></button>
+                                            </template>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                    <template x-if="bonusAccepted == 'false'">
                         <div class="flex gap-2 mb-4 justify-center flex-wrap">
                             <template x-for="(template, idx) in selectedTemplates" :key="idx">
                                 <button @click="activeTemplate = idx"
@@ -441,71 +467,71 @@
 
                 <!-- Right: Template Slots -->
                 <div class="h-[100vh] overflow-auto pb-[10rem] custom-scrollbar">
-    <h2 class="text-gray-200 mb-4 text-center">Template Pilihan</h2>
+                    <h2 class="text-gray-200 mb-4 text-center">Template Pilihan</h2>
 
-    <template x-for="(template, templateIndex) in selectedTemplates" :key="templateIndex">
-        <div class="mb-6">
-            <div class="flex items-center justify-between mb-3">
-                <h3 class="text-gray-300 text-sm"
-                    x-text="`${template.name} (${template.slots} slots) - Orang ${templateIndex + 1}`">
-                </h3>
-                <div class="flex gap-2">
-                    <button @click="printTemplate(templateIndex)"
-                        class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
-                        🖨️ Print 4R
-                    </button>
+                    <template x-for="(template, templateIndex) in selectedTemplates" :key="templateIndex">
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-gray-300 text-sm"
+                                    x-text="`${template.name} (${template.slots} slots) - Orang ${templateIndex + 1}`">
+                                </h3>
+                                <div class="flex gap-2">
+                                    <button @click="printTemplate(templateIndex)"
+                                        class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
+                                        🖨️ Print 4R
+                                    </button>
 
-                    <button @click="downloadTemplate(templateIndex)"
-                        class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
-                        💾 Download HD
-                    </button>
-                </div>
-            </div>
-
-            <!-- Template Container -->
-            <div :id="`template-container-${templateIndex}`"
-                class="relative w-full h-[800px] overflow-hidden border-2 border-gray-700/50 bg-black">
-                <img :src="template.file_path"
-                    class="absolute inset-0 w-full h-full object-cover opacity-100"
-                    alt="Template Background" />
-
-                <!-- Slot Grid -->
-                <div class="absolute inset-0 grid h-full" :class="getGridClass(template)">
-                    <template x-for="(slot, slotIndex) in templateSlots[templateIndex]" :key="slotIndex">
-                        <div class="zoom-container group relative w-full border-2 border-dashed flex items-center justify-center cursor-grab overflow-hidden bg-gray-900/30 transition"
-                            :class="[
-                                slot ? 'border-blue-500' : 'border-gray-400/50',
-                                getSlotAspectClass(template),
-                                template.slots === 6 ? 'rounded-[1.5rem]' : 'rounded-none'
-                            ]"
-                            :data-template-index="templateIndex"
-                            :data-slot-index="slotIndex">
-
-                            <template x-if="!slot">
-                                <span class="text-white text-xs bg-black/50 px-2 py-1 rounded"
-                                    x-text="`Slot ${slotIndex + 1}`"></span>
-                            </template>
-
-                            <template x-if="slot">
-                                <div class="relative w-full h-full">
-                                    <img :src="slot" class="zoomable transition-transform duration-200" />
-
-                                    <button
-                                        @click.stop="templateSlots[templateIndex][slotIndex] = null;
-                                                     delete imageTransforms[templateIndex]?.[slotIndex];
-                                                     $nextTick(() => initPanzoom());"
-                                        class="absolute top-1 right-1 bg-red-600/80 hover:bg-red-700 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md"
-                                        title="Hapus Foto">✕
+                                    <button @click="downloadTemplate(templateIndex)"
+                                        class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-3 py-1 rounded-lg shadow">
+                                        💾 Download HD
                                     </button>
                                 </div>
-                            </template>
+                            </div>
+
+                            <!-- Template Container -->
+                            <div :id="`template-container-${templateIndex}`"
+                                class="relative w-full h-[800px] overflow-hidden border-2 border-gray-700/50 bg-black">
+                                <img :src="template.file_path"
+                                    class="absolute inset-0 w-full h-full object-cover opacity-100"
+                                    alt="Template Background" />
+
+                                <!-- Slot Grid -->
+                                <div class="absolute inset-0 grid h-full" :class="getGridClass(template)">
+                                    <template x-for="(slot, slotIndex) in templateSlots[templateIndex]" :key="slotIndex">
+                                        <div class="zoom-container group relative w-full border-2 border-dashed flex items-center justify-center cursor-grab overflow-hidden bg-gray-900/30 transition"
+                                            :class="[
+                                                slot ? 'border-blue-500' : 'border-gray-400/50',
+                                                getSlotAspectClass(template),
+                                                template.slots === 6 ? 'rounded-[1.5rem]' : 'rounded-none'
+                                            ]"
+                                            :data-template-index="templateIndex"
+                                            :data-slot-index="slotIndex">
+
+                                            <template x-if="!slot">
+                                                <span class="text-white text-xs bg-black/50 px-2 py-1 rounded"
+                                                    x-text="`Slot ${slotIndex + 1}`"></span>
+                                            </template>
+
+                                            <template x-if="slot">
+                                                <div class="relative w-full h-full">
+                                                    <img :src="slot" class="zoomable transition-transform duration-200" />
+
+                                                    <button
+                                                        @click.stop="templateSlots[templateIndex][slotIndex] = null;
+                                                                    delete imageTransforms[templateIndex]?.[slotIndex];
+                                                                    $nextTick(() => initPanzoom());"
+                                                        class="absolute top-1 right-1 bg-red-600/80 hover:bg-red-700 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md"
+                                                        title="Hapus Foto">✕
+                                                    </button>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
                         </div>
                     </template>
                 </div>
-            </div>
-        </div>
-    </template>
-</div>
 
             </div>
 

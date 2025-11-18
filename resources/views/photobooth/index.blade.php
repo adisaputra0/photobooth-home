@@ -17,6 +17,7 @@
         hargaBando: {{ $hargaBando }},
         hargaTambahanWaktu: {{ $hargaTambahanWaktu }},
         get totalPrice() {
+            localStorage.setItem('bonusAccepted', this.bonusAccepted);
             if (this.serviceType === 'studio') {
                 let total = 0;
     
