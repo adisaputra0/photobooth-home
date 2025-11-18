@@ -4,6 +4,7 @@
     <div x-data="{
         serviceType: 'photobox',
         numPeople: 4,
+        minPeople: 4,
         numBando: 0,
         timeAddition: '-',
         showTutorials: false,
@@ -17,7 +18,6 @@
         hargaTambahanWaktu: {{ $hargaTambahanWaktu }},
         get totalPrice() {
             if (this.serviceType === 'studio') {
-                this.numPeople = 2;
                 let total = 0;
     
                 // Tambahan waktu
@@ -45,7 +45,6 @@
     
                 return total;
             } else {
-                this.numPeople = 4;
                 let total = this.numPeople * this.pricePerPerson;
     
                 // Tambahan waktu
@@ -70,6 +69,15 @@
         },
         updateNumPeople() {
             localStorage.setItem('numPeople', this.numPeople);
+        },
+        updatePacketType() {
+            if (this.serviceType === 'studio') {
+                this.numPeople = 2;
+                this.minPeople = 2;
+            } else {
+                this.numPeople = 4;
+                this.minPeople = 4;
+            }
         }
     }" x-init="updateNumPeople();
     resetBonusAccept()" x-effect="updateNumPeople();"
@@ -134,7 +142,7 @@
                                 <p class="text-sm text-gray-400">
                                     Tentukan apakah Anda ingin menggunakan layanan photo studio atau photobox
                                 </p>
-                                <select x-model="serviceType" @change="updateNumPeople()"
+                                <select x-model="serviceType" @change="updatePacketType()"
                                     class="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gray-500 transition-all duration-300 appearance-none cursor-pointer">
                                     <option value="studio">Photo Studio</option>
                                     <option value="photobox">Photobox</option>
@@ -144,7 +152,7 @@
                             <!-- Jumlah Orang -->
                             <div>
                                 <label class="text-gray-300 mb-3">Masukkan Jumlah Orang</label>
-                                <input type="number" x-model.number="numPeople" @change="updateNumPeople()" min="2"
+                                <input type="number" x-model.number="numPeople" @change="updateNumPeople()" :min="minPeople"
                                     id="numPeople"
                                     class="w-full bg-gray-700/50 backdrop-blur-sm border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:border-gray-500 transition-all duration-300" />
                             </div>
