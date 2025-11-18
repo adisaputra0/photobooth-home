@@ -25,22 +25,22 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         PhotoboothTemplate::create([
-            "name" => "Template 1",
+            "name" => "Grid 1",
             "file_path" => "templates/slot-1.png",
             "slots" => 1,
         ]);
         PhotoboothTemplate::create([
-            "name" => "Template 2",
+            "name" => "Grid 4",
             "file_path" => "templates/slot-4.png",
             "slots" => 4,
         ]);
         PhotoboothTemplate::create([
-            "name" => "Template 3",
+            "name" => "Grid 6",
             "file_path" => "templates/slot-6.png",
             "slots" => 6,
         ]);
         PhotoboothTemplate::create([
-            "name" => "Template 4",
+            "name" => "Grid 8",
             "file_path" => "templates/slot-8.png",
             "slots" => 8,
         ]);
