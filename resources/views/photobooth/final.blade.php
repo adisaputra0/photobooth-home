@@ -76,6 +76,21 @@
         audio: null,
         remainingTime: 0,
         bonusAccepted: localStorage.getItem('bonusAccepted') || 'false',
+        scrollToTemplate(index) {
+            const container = document.querySelector('.h-\\[100vh\\].overflow-auto.custom-scrollbar:last-of-type');
+            const target = document.getElementById(`template-container-${index}`);
+            
+            if (container && target) {
+                const containerRect = container.getBoundingClientRect();
+                const targetRect = target.getBoundingClientRect();
+                const scrollTop = container.scrollTop;
+                
+                container.scrollTo({
+                    top: scrollTop + targetRect.top - containerRect.top - 20,
+                    behavior: 'smooth'
+                });
+            }
+        },
         closeAlertModal() {
             if(document.getElementById('password').value == 'admin123'){
                 this.showAlert = false;
@@ -424,7 +439,7 @@
                                         <template x-for="i in 2" :key="i">
                                             <template x-if="(gIdx * 2 + (i - 1)) < selectedTemplates.length">
                                                 <button
-                                                    @click="activeTemplate = gIdx * 2 + (i - 1)"
+                                                    @click="activeTemplate = gIdx * 2 + (i - 1); scrollToTemplate(gIdx * 2 + (i - 1))"
                                                     :class="activeTemplate === (gIdx * 2 + (i - 1)) ? 'bg-blue-600' : 'bg-gray-700'"
                                                     class="px-3 py-1 rounded-lg text-white text-xs"
                                                     x-text="selectedTemplates[gIdx * 2 + (i - 1)].name"
@@ -439,7 +454,7 @@
                     <template x-if="bonusAccepted == 'false'">
                         <div class="flex gap-2 mb-4 justify-center flex-wrap">
                             <template x-for="(template, idx) in selectedTemplates" :key="idx">
-                                <button @click="activeTemplate = idx"
+                                <button @click="activeTemplate = idx; scrollToTemplate(idx)"
                                     :class="activeTemplate === idx ? 'bg-blue-600' : 'bg-gray-700'"
                                     class="px-3 py-1 rounded-lg text-white text-xs" x-text="`Orang ${idx + 1}`">
                                 </button>
@@ -489,7 +504,7 @@
                             </div>
 
                             <!-- Template Container -->
-                            <div :id="`template-container-${templateIndex}`"
+                            <div :id="`template-container-${templateIndex}`" :data-scroll-target="`template-${templateIndex}`"
                                 class="relative w-full h-[800px] overflow-hidden border-2 border-gray-700/50 bg-black">
                                 <img :src="template.file_path"
                                     class="absolute inset-0 w-full h-full object-cover opacity-100"
