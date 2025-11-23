@@ -423,7 +423,7 @@
 
             <div class="grid md:grid-cols-2 gap-12">
                 <!-- Left: Foto Upload -->
-                <div class="h-[100vh] overflow-auto custom-scrollbar pb-52">
+                <div class="h-[100vh]">
                     <h2 class="text-gray-200 mb-4 text-center">Foto Anda</h2>
 
                     <template x-if="bonusAccepted == 'true'">
@@ -462,7 +462,7 @@
                         </div>
                     </template>
 
-                    <div class="grid grid-cols-3 gap-4">
+                    <div class="grid grid-cols-3 gap-4 h-[100dvh] overflow-auto custom-scrollbar pb-72">
                         <template x-for="(photo, index) in uploadedPhotos" :key="index">
                             <div class="relative group">
                                 <img :src="photo"
