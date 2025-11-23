@@ -410,7 +410,7 @@
             class="relative max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 sm:p-8 shadow-2xl">
 
             <!-- Countdown Timer -->
-            <div class="absolute top-4 right-6 bg-gray-900/70 border border-gray-700/50 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-md">
+            <div class="absolute top-4 right-6 bg-gray-900/70 border border-gray-700/50 text-white px-4 py-2 rounded-xl font-semibold shadow-md text-lg">
                 ⏱️ <span x-text="formatTime(remainingTime)"></span>
             </div>
 
