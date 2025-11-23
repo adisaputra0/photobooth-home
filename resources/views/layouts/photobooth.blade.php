@@ -18,4 +18,11 @@
     @yield('content')
 </body>
 
+<script>
+    document.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+    });
+</script>
+
+
 </html>
