@@ -38,7 +38,7 @@
 
         * Scrollbar Styling */
     .custom-scrollbar::-webkit-scrollbar {
-        width: 8px;
+        width: 100px;
     }
 
 
@@ -421,9 +421,9 @@
                 <p class="text-gray-400 text-sm">Pilih foto terbaik dan tempatkan ke dalam template pilihan Anda</p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-8">
+            <div class="grid md:grid-cols-2 gap-12">
                 <!-- Left: Foto Upload -->
-                <div class="h-[100vh] overflow-auto custom-scrollbar">
+                <div class="h-[100vh] overflow-auto custom-scrollbar pb-52">
                     <h2 class="text-gray-200 mb-4 text-center">Foto Anda</h2>
 
                     <template x-if="bonusAccepted == 'true'">
