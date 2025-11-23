@@ -37,7 +37,7 @@
             </div>
 
             <!-- Preview Per User -->
-            <div class="bg-gray-900/40 border border-gray-700/50 rounded-2xl p-5 mb-8">
+            <div class="bg-gray-900/40 border border-gray-700/50 rounded-2xl p-5 mb-8" id="previewSection">
                 <h2 class="text-white text-lg font-semibold mb-4">
                     Preview Pilihan Setiap Orang
                 </h2>
@@ -123,6 +123,14 @@
                 users: [],
                 currentUser: 0,
                 selectedTemplate: null,
+                scrollToPreview() {
+                    setTimeout(() => {
+                        const el = document.getElementById("previewSection");
+                        if (el) el.scrollIntoView({
+                            behavior: "smooth"
+                        });
+                    }, 200);
+                },
 
                 get currentUserText() {
                     const isBonus = localStorage.getItem("bonusAccepted") === "true";
@@ -145,6 +153,8 @@
                 },
 
                 selectTemplate(template) {
+                    this.scrollToPreview();
+
                     if (this.currentUser >= this.numPeople) return;
 
                     const isBonus = localStorage.getItem("bonusAccepted") === "true";
