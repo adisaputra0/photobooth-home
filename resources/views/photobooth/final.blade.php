@@ -79,12 +79,12 @@
         scrollToTemplate(index) {
             const container = document.querySelector('.h-\\[100vh\\].overflow-auto.custom-scrollbar:last-of-type');
             const target = document.getElementById(`template-container-${index}`);
-            
+
             if (container && target) {
                 const containerRect = container.getBoundingClientRect();
                 const targetRect = target.getBoundingClientRect();
                 const scrollTop = container.scrollTop;
-                
+
                 container.scrollTo({
                     top: scrollTop + targetRect.top - containerRect.top - 20,
                     behavior: 'smooth'
@@ -102,7 +102,7 @@
                 alert('Password salah. Silakan coba lagi.');
             }
         },
-    }" class="bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen p-8 pb-32">
+    }" class="bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen p-8 pb-32 h-[100dvh] overflow-hidden">
         <div x-data="{
             uploadedPhotos: {{ Js::from($photos) }},
             templates: {{ Js::from($templates) }},
