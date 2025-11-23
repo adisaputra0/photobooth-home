@@ -85,7 +85,7 @@
         bonusAccepted: localStorage.getItem('bonusAccepted') || 'false',
         scrollToTemplate(index) {
             const container = document.querySelector('.h-\\[100vh\\].overflow-auto.custom-scrollbar:last-of-type');
-            const target = document.getElementById(`template-container-${index}`);
+            const target = document.getElementById(`template-header-${index}`);
 
             if (container && target) {
                 const containerRect = container.getBoundingClientRect();
@@ -488,12 +488,12 @@
                 </div>
 
                 <!-- Right: Template Slots -->
-                <div class="h-[100vh] overflow-auto pb-[10rem] custom-scrollbar scroll-disabled" >
+                <div class="h-[100vh] overflow-auto pb-[10rem] custom-scrollbar scroll-disabled">
                     {{-- <h2 class="text-gray-200 mb-4 text-center">Template Pilihan</h2> --}}
 
                     <template x-for="(template, templateIndex) in selectedTemplates" :key="templateIndex">
                         <div class="mb-6">
-                            <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center justify-between mb-2" :id="`template-header-${templateIndex}`">
                                 <h3 class="text-gray-300 text-sm"
                                     x-text="`${template.name} (${template.slots} slots) - Orang ${templateIndex + 1}`">
                                 </h3>
@@ -512,7 +512,7 @@
 
                             <!-- Template Container -->
                             <div :id="`template-container-${templateIndex}`" :data-scroll-target="`template-${templateIndex}`"
-                                class="relative w-full h-[800px] overflow-hidden border-2 border-gray-700/50 bg-black">
+                                class="relative w-full h-[800px] overflow-hidden border-2 border-gray-700/50 bg-black ">
                                 <img :src="template.file_path"
                                     class="absolute inset-0 w-full h-full object-cover opacity-100"
                                     alt="Template Background" />
