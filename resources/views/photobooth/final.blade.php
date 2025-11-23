@@ -41,12 +41,12 @@
         width: 100px;
     }
 
-    .scroll-disabled {
-        pointer-events: none; /* manual scroll nonaktif */
-    }
+    /* .scroll-disabled {
+        pointer-events: none;
+    } */
 
     .scroll-disabled::-webkit-scrollbar {
-        pointer-events: auto; /* scrollbar tetap bisa tampil */
+        pointer-events: auto;
     }
 
 
