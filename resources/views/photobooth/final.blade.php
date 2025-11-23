@@ -41,6 +41,13 @@
         width: 100px;
     }
 
+    .scroll-disabled {
+        pointer-events: none; /* manual scroll nonaktif */
+    }
+
+    .scroll-disabled::-webkit-scrollbar {
+        pointer-events: auto; /* scrollbar tetap bisa tampil */
+    }
 
 
     .custom-scrollbar::-webkit-scrollbar-track {
@@ -407,7 +414,7 @@
 }
 
         }"
-            class="relative max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 sm:p-8 shadow-2xl">
+            class="relative max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-2 shadow-2xl">
 
             <!-- Countdown Timer -->
             <div class="absolute top-4 right-6 bg-gray-900/70 border border-gray-700/50 text-white px-4 py-2 rounded-xl font-semibold shadow-md text-lg">
@@ -415,7 +422,7 @@
             </div>
 
             <!-- Header -->
-            <div class="text-center mb-8">
+            <div class="text-center mb-3">
                 <p class="text-sm text-gray-400 mb-1">Langkah 3 dari 3</p>
                 <h1 class="text-white text-2xl font-semibold mb-2">Susun Hasil Akhir Anda</h1>
                 <p class="text-gray-400 text-sm">Pilih foto terbaik dan tempatkan ke dalam template pilihan Anda</p>
@@ -481,8 +488,8 @@
                 </div>
 
                 <!-- Right: Template Slots -->
-                <div class="h-[100vh] overflow-auto pb-[10rem] custom-scrollbar">
-                    <h2 class="text-gray-200 mb-4 text-center">Template Pilihan</h2>
+                <div class="h-[100vh] overflow-auto pb-[10rem] custom-scrollbar scroll-disabled" >
+                    {{-- <h2 class="text-gray-200 mb-4 text-center">Template Pilihan</h2> --}}
 
                     <template x-for="(template, templateIndex) in selectedTemplates" :key="templateIndex">
                         <div class="mb-6">
@@ -651,5 +658,12 @@
     </div>
         <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+        <script>
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('lock-scroll'));
+            }, 600); // sesuai durasi smooth scroll
+
+        </script>
 
 @endsection
