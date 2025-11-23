@@ -109,7 +109,7 @@
                 alert('Password salah. Silakan coba lagi.');
             }
         },
-    }" class="bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen p-8 pb-32 h-[100dvh] overflow-hidden">
+    }" class="bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen p-8 pb-32 h-[114dvh] overflow-hidden">
         <div x-data="{
             uploadedPhotos: {{ Js::from($photos) }},
             templates: {{ Js::from($templates) }},
@@ -488,11 +488,11 @@
                 </div>
 
                 <!-- Right: Template Slots -->
-                <div class="h-[100vh] overflow-auto pb-[10rem] custom-scrollbar scroll-disabled">
+                <div class="h-[100vh] overflow-auto pb-[10rem] custom-scrollbar scroll-disabled pb-[600px]">
                     {{-- <h2 class="text-gray-200 mb-4 text-center">Template Pilihan</h2> --}}
 
                     <template x-for="(template, templateIndex) in selectedTemplates" :key="templateIndex">
-                        <div class="mb-6">
+                        <div class="mb-6 ">
                             <div class="flex items-center justify-between mb-2" :id="`template-header-${templateIndex}`">
                                 <h3 class="text-gray-300 text-sm"
                                     x-text="`${template.name} (${template.slots} slots) - Orang ${templateIndex + 1}`">
