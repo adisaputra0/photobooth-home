@@ -36,9 +36,12 @@
             border: none;
         }
 
-        * Scrollbar Styling */
     .custom-scrollbar::-webkit-scrollbar {
-        width: 100px;
+        opacity: 0;
+    }
+
+    .custom-scrollbar{
+        scrollbar-width: none;
     }
 
     /* .scroll-disabled {
@@ -52,23 +55,44 @@
 
     .custom-scrollbar::-webkit-scrollbar-track {
         background: rgba(55, 65, 81, 0.3); /* abu gelap transparan */
-        border-radius: 10px;
+        border-radius: 5px;
     }
 
     .custom-scrollbar::-webkit-scrollbar-thumb {
         background: linear-gradient(180deg, #3b82f6, #8b5cf6); /* biru ke ungu */
-        border-radius: 10px;
+        border-radius: 5px;
     }
 
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
         background: linear-gradient(180deg, #2563eb, #7c3aed);
     }
 
-    /* Untuk Firefox */
-    .custom-scrollbar {
-        scrollbar-width: thin;
+    /* Chrome / Edge / Safari */
+    .custom-scrollbar-left::-webkit-scrollbar {
+        width: 12px; /* ➜ scrollbar lebar */
+    }
+
+    .custom-scrollbar-left::-webkit-scrollbar-track {
+        background: rgba(55, 65, 81, 0.3);
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar-left::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #3b82f6, #8b5cf6);
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar-left::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #2563eb, #7c3aed);
+    }
+
+    /* Firefox */
+    .custom-scrollbar-left {
+        scrollbar-width: auto;
         scrollbar-color: #6366f1 rgba(55, 65, 81, 0.3);
     }
+
+
 
     img {
         will-change: transform;
@@ -191,10 +215,10 @@
                     return 'grid-cols-1 p-6 pb-24';
                 } else if (slots === 4) {
                     // 4 slots: Grid 2x2 dengan gap sedang dan padding bawah
-                    return 'grid-cols-2 gap-x-4 p-4 pb-[7rem]';
+                    return 'grid-cols-2 gap-x-4 gap-y-6 p-4 pb-[7rem]';
                 } else if (slots === 6) {
                     // 6 slots: Grid 3x2 dengan gap kecil dan padding lebih banyak
-                    return 'grid-cols-2 gap-x-5 gap-y-2 my-[80px] px-5 h-max';
+                    return 'grid-cols-2 gap-x-5 gap-y-2 my-[70px] px-5 h-max';
                 }else if (slots === 8) {
                     // 6 slots: Grid 3x2 dengan gap kecil dan padding lebih banyak
                     return 'grid-cols-2 gap-x-[3.5rem] gap-y-2 my-[123px] px-5 h-max';
@@ -414,10 +438,10 @@
 }
 
         }"
-            class="relative max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-2 shadow-2xl">
+            class=" max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-2 shadow-2xl">
 
             <!-- Countdown Timer -->
-            <div class="absolute top-4 right-6 bg-gray-900/70 border border-gray-700/50 text-white px-4 py-2 rounded-xl font-semibold shadow-md text-lg">
+            <div class="fixed -top-[20px] -right-[220px] bg-gray-900/70 border border-gray-700/50 text-white px-4 py-2 rounded-xl font-semibold shadow-md text-lg">
                 ⏱️ <span x-text="formatTime(remainingTime)"></span>
             </div>
 
@@ -469,7 +493,7 @@
                         </div>
                     </template>
 
-                    <div class="grid grid-cols-3 gap-4 h-[100dvh] overflow-auto custom-scrollbar pb-72">
+                    <div class="grid grid-cols-3 gap-4 h-[100dvh] overflow-auto custom-scrollbar-left pb-72">
                         <template x-for="(photo, index) in uploadedPhotos" :key="index">
                             <div class="relative group">
                                 <img :src="photo"
