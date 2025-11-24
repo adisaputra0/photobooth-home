@@ -44,9 +44,10 @@
         scrollbar-width: none;
     }
 
-    /* .scroll-disabled {
-        pointer-events: none;
-    } */
+    .scroll-disabled {
+        /* pointer-events: none; */
+        overscroll-behavior: none;
+    }
 
     .scroll-disabled::-webkit-scrollbar {
         pointer-events: auto;
@@ -108,7 +109,9 @@
         remainingTime: 0,
         bonusAccepted: localStorage.getItem('bonusAccepted') || 'false',
         scrollToTemplate(index) {
-            const container = document.querySelector('.h-\\[100vh\\].overflow-auto.custom-scrollbar:last-of-type');
+            startProgrammaticScroll();
+            {{-- const container = document.querySelector('.h-\\[100vh\\].overflow-auto.custom-scrollbar:last-of-type'); --}}
+            const container = document.getElementById('scroll-area');
             const target = document.getElementById(`template-header-${index}`);
 
             if (container && target) {
@@ -493,7 +496,7 @@
                         </div>
                     </template>
 
-                    <div class="grid grid-cols-3 gap-4 h-[100dvh] overflow-auto custom-scrollbar-left pb-72">
+                    <div class="grid grid-cols-3 gap-4 h-[100dvh] overflow-auto custom-scrollbar pb-72" >
                         <template x-for="(photo, index) in uploadedPhotos" :key="index">
                             <div class="relative group">
                                 <img :src="photo"
@@ -512,7 +515,7 @@
                 </div>
 
                 <!-- Right: Template Slots -->
-                <div class="h-[100vh] overflow-auto pb-[10rem] custom-scrollbar scroll-disabled pb-[600px]">
+                <div class="h-[100vh] overflow-auto pb-[10rem] scroll-disabled pb-[600px]" id="scroll-area">
                     {{-- <h2 class="text-gray-200 mb-4 text-center">Template Pilihan</h2> --}}
 
                     <template x-for="(template, templateIndex) in selectedTemplates" :key="templateIndex">
@@ -684,9 +687,46 @@
         <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
         <script>
+            const scrollArea = document.getElementById('scroll-area');
+            let allowProgrammaticScroll = false;
+
+            function preventScroll(e) {
+                // Jika scroll berasal dari user => block
+                if (!allowProgrammaticScroll) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            }
+
+            function disableScrolling() {
+                scrollArea.addEventListener('wheel', preventScroll, { passive: false });
+                scrollArea.addEventListener('touchmove', preventScroll, { passive: false });
+                scrollArea.addEventListener('touchstart', preventScroll, { passive: false });
+            }
+
+            function enableScrolling() {
+                scrollArea.removeEventListener('wheel', preventScroll);
+                scrollArea.removeEventListener('touchmove', preventScroll);
+                scrollArea.removeEventListener('touchstart', preventScroll);
+            }
+
+            // IZINKAN programmatic scroll selama eksekusi scrollToTemplate()
+            function startProgrammaticScroll() {
+                allowProgrammaticScroll = true;
+                setTimeout(() => {
+                    allowProgrammaticScroll = false;
+                }, 700); // durasi sama dengan smooth scroll
+            }
+
+            // Trigger dari Alpine
+            window.addEventListener('lock-scroll', disableScrolling);
+            window.addEventListener('unlock-scroll', enableScrolling);
+
+            // Example: setelah auto-scroll selesai → kunci scroll
             setTimeout(() => {
                 window.dispatchEvent(new CustomEvent('lock-scroll'));
-            }, 600); // sesuai durasi smooth scroll
+            }, 600);
 
         </script>
 
