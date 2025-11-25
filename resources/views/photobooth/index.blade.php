@@ -265,6 +265,8 @@
                                     </div>
                                     <div>
                                         <span>All Softcopy File</span>
+                                        <br>
+                                        <b>*Free (follow + mention @ignos.studio)/ +10k</b>
                                     </div>
                                 </div>
 
