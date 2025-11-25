@@ -288,7 +288,7 @@
                     return 'grid-cols-1 p-6 pb-24';
                 } else if (slots === 4) {
                     // 4 slots: Grid 2x2 dengan gap sedang dan padding bawah
-                    return 'grid-cols-2 gap-x-4 gap-y-6 p-4 pb-[7rem]';
+                    return 'grid-cols-2 gap-x-4 gap-y-2 p-4 pb-[7rem]';
                 } else if (slots === 6) {
                     // 6 slots: Grid 3x2 dengan gap kecil dan padding lebih banyak
                     return 'grid-cols-2 gap-x-5 gap-y-2 my-[70px] px-5 h-max';
