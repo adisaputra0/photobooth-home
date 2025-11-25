@@ -599,12 +599,12 @@
             </div>
 
             <!-- Button -->
-            <div class="flex justify-end mt-8">
+            {{-- <div class="flex justify-end mt-8">
                 <button @click="handleFinish()"
                     class="bg-green-600 border border-green-700/50 rounded-xl px-6 py-3 text-white hover:bg-green-700 transition-all duration-300 shadow-lg">
                     Selesai & Generate Hasil →
                 </button>
-            </div>
+            </div> --}}
         </div>
 
         <!-- Tutorial Bar -->
