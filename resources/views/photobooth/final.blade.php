@@ -244,7 +244,7 @@
                     return 'aspect-[2/2.7]';
                 } else if (slots === 6) {
                     // 6 slots: Aspect ratio lebih compact
-                    return 'aspect-[1/0.9]';
+                    return 'aspect-[1/0.9] scale-95';
                 }else if (slots === 8) {
                     // 8 slots: Aspect ratio lebih compact
                     return 'aspect-[1.6/1.1]';
