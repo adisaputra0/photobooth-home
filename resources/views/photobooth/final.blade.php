@@ -460,55 +460,55 @@
             },
 
             downloadTemplate(index) {
-    const scrollEls = document.querySelectorAll('.custom-scrollbar');
-    const originalScrollbarStyles = [];
-    scrollEls.forEach(el => {
-        originalScrollbarStyles.push(el.style.scrollbarWidth);
-        el.style.scrollbarWidth = 'none';
-    });
+                const scrollEls = document.querySelectorAll('.custom-scrollbar');
+                const originalScrollbarStyles = [];
+                scrollEls.forEach(el => {
+                    originalScrollbarStyles.push(el.style.scrollbarWidth);
+                    el.style.scrollbarWidth = 'none';
+                });
 
-    const element = document.getElementById(`template-container-${index}`);
-    if (!element) return alert('Template tidak ditemukan');
+                const element = document.getElementById(`template-container-${index}`);
+                if (!element) return alert('Template tidak ditemukan');
 
-    html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#000',
-    }).then(canvas => {
-        // 🔹 Ambil hasil gambar dalam Base64
-        const imageData = canvas.toDataURL('image/jpeg', 1.0);
+                html2canvas(element, {
+                    scale: 4,
+                    useCORS: true,
+                    backgroundColor: '#000',
+                }).then(canvas => {
+                    // 🔹 Ambil hasil gambar dalam Base64
+                    const imageData = canvas.toDataURL('image/jpeg', 1.0);
 
-        // 🔹 Kirim ke server Laravel
-        fetch('/save-photo', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector(`meta[name='csrf-token']`).content,
-            },
-            body: JSON.stringify({
-                image: imageData,
-                filename: `orang-${index + 1}.jpg`
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Foto berhasil disimpan di server!');
-            } else {
-                alert('Gagal menyimpan foto di server.');
+                    // 🔹 Kirim ke server Laravel
+                    fetch('/save-photo', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector(`meta[name='csrf-token']`).content,
+                        },
+                        body: JSON.stringify({
+                            image: imageData,
+                            filename: `orang-${index + 1}.jpg`
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Foto berhasil disimpan di server!');
+                        } else {
+                            alert('Gagal menyimpan foto di server.');
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Gagal mengirim ke server:', err);
+                        alert('Terjadi kesalahan saat mengirim gambar ke server.');
+                    });
+                })
+                .finally(() => {
+                    scrollEls.forEach((el, i) => {
+                        el.style.scrollbarWidth = originalScrollbarStyles[i] || '';
+                    });
+                });
             }
-        })
-        .catch(err => {
-            console.error('Gagal mengirim ke server:', err);
-            alert('Terjadi kesalahan saat mengirim gambar ke server.');
-        });
-    })
-    .finally(() => {
-        scrollEls.forEach((el, i) => {
-            el.style.scrollbarWidth = originalScrollbarStyles[i] || '';
-        });
-    });
-}
 
         }"
             class=" max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-2 shadow-2xl">
