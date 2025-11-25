@@ -104,14 +104,70 @@
     <div
     x-data="{
         remainingTime: 0,
+        showAlert: false,
+        audio: null,
+
+        init() {
+            const savedMinutes = localStorage.getItem('sessionDuration');
+            const durationInSeconds = savedMinutes ? parseInt(savedMinutes) * 60 : 60;
+            {{-- const durationInSeconds = 3; --}}
+            this.remainingTime = durationInSeconds;
+            this.startCountdown();
+        },
+        startCountdown() {
+            this.timerInterval = setInterval(() => {
+                if (this.remainingTime > 0) {
+                    this.remainingTime--;
+                } else {
+                    clearInterval(this.timerInterval);
+                    this.showAlertModal();
+                }
+            }, 1000);
+        },
         formatTime(seconds) {
             const m = Math.floor(seconds / 60);
             const s = seconds % 60;
             return `${m}:${s.toString().padStart(2, '0')}`;
-        }
-    }"
-    class="fixed top-4 right-4 z-[9999] bg-gray-900/70 border border-gray-700/50 text-white px-4 py-2 rounded-xl font-semibold shadow-md text-lg">
-        ⏱️ <span x-text="formatTime(remainingTime)"></span>
+        },
+        showAlertModal() {
+            this.showAlert = true;
+            this.audio = new Audio(`{{ asset('assets/ringtone.mp3') }}`);
+            this.audio.loop = true;
+            this.audio.play().catch(err => console.error('Gagal memutar audio:', err));
+        },
+        closeAlertModal() {
+            if(document.getElementById('password').value == 'admin123'){
+                this.showAlert = false;
+                if (this.audio) {
+                    this.audio.pause();
+                    this.audio.currentTime = 0;
+                }
+            }else{
+                alert('Password salah. Silakan coba lagi.');
+            }
+        },
+    }">
+        <div class="fixed top-4 right-4 z-[9999] bg-gray-900/70 border border-gray-700/50 text-white px-4 py-2 rounded-xl font-semibold shadow-md text-lg">
+            ⏱️ <span x-text="formatTime(remainingTime)"></span>
+        </div>
+        <!-- Modal Alert -->
+        <div
+            x-show="showAlert"
+            x-transition.opacity
+            class="fixed top-0 bg-black/70 flex items-center justify-center z-50 w-full h-full"
+        >
+            <div class="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full text-center relative">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-3">⏰ Waktu Habis!</h2>
+                <p class="text-gray-600 mb-6">Waktu pengambilan foto telah berakhir. Masukkan password untuk klik oke</p>
+                <input type="password" class="w-full mb-6" id="password">
+                <button
+                    @click="closeAlertModal()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium transition"
+                >
+                    Oke
+                </button>
+            </div>
+        </div>
     </div>
 
     <div x-data="{
@@ -458,9 +514,9 @@
             class=" max-w-6xl mx-auto bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-2 shadow-2xl">
 
             <!-- Countdown Timer -->
-            <div class="fixed -top-[20px] -right-[220px] bg-gray-900/70 border border-gray-700/50 text-white px-4 py-2 rounded-xl font-semibold shadow-md text-lg">
+            {{-- <div class="fixed -top-[20px] -right-[220px] bg-gray-900/70 border border-gray-700/50 text-white px-4 py-2 rounded-xl font-semibold shadow-md text-lg">
                 ⏱️ <span x-text="formatTime(remainingTime)"></span>
-            </div>
+            </div> --}}
 
             <!-- Header -->
             <div class="text-center mb-3">
@@ -677,24 +733,7 @@
                 </button>
             </div>
         </div>
-        <!-- Modal Alert -->
-        <div
-            x-show="showAlert"
-            x-transition.opacity
-            class="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
-        >
-            <div class="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full text-center relative">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-3">⏰ Waktu Habis!</h2>
-                <p class="text-gray-600 mb-6">Waktu pengambilan foto telah berakhir. Masukkan password untuk klik oke</p>
-                <input type="password" class="w-full mb-6" id="password">
-                <button
-                    @click="closeAlertModal()"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium transition"
-                >
-                    Oke
-                </button>
-            </div>
-        </div>
+        
 
     </div>
         <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
