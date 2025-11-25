@@ -100,6 +100,20 @@
     }
     </style>
 
+    <!-- Countdown Timer → pindah ke sini -->
+    <div
+    x-data="{
+        remainingTime: 0,
+        formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+    }"
+    class="fixed top-4 right-4 z-[9999] bg-gray-900/70 border border-gray-700/50 text-white px-4 py-2 rounded-xl font-semibold shadow-md text-lg">
+        ⏱️ <span x-text="formatTime(remainingTime)"></span>
+    </div>
+
     <div x-data="{
         showTutorialBar: true,
         previewPhoto: null,
