@@ -20,7 +20,7 @@ class PhotoboothController extends Controller
         $hargaBando = 5000;
         $hargaTambahanWaktu = 15000;
         $hargaTambahanWaktuStudio = 35000;
-        $hargaPacketStudio = 90000;
+        $hargaPacketStudio = 100000;
         $hargaStudio = 35000;
         $hargaTirai = 40000;
         $hargaSpotlight = 40000;
